@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Evaluación de Prácticas Profesionales</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAA6CAMAAAA3Dq9LAAAAYFBMVEUtKCrPTwhjYmI9MzMzMDA2MzRjNB1OS036+vqKOxCloaaXQA5BPj5BQTxAPDxVKlVDPkBBOkBDQT25udC//7+50NAAAAD7XAIiHBwYGRz+YQEoJCWyRgoUGCBSKhYsIRsUpy+YAAAAIHRSTlPk/xUEa534XAT/FP9jYp8GcuGQCwQLAP/+/f/0//3//XkVAgsAAANZSURBVHjapVeLlqMgDI0PrK2z712FKvL/fzkhvIKgzjmbU9tOxTvJ5eYBzNHa+TFAsvXM4DF36SlIX7u5l0pJJc8Nb+P9CwBj11RNh0vK9QpAma1uzdY4M+oaYH8HWw6f7ttyC7Dc2L0H/wUgv+IBXJN48/wtiRJ3Eq/BRYKcRZf2IIXLEOwCraTePMCm4tenpntKXoTwbYXVrCBTILtSQ6AV0e19OPUAs8Haa5XhoXdjlb28A5gRbgV/JgMgeyBAs0S3pZ48wKbl+iqWHwG6WcS9tLJDgP1MAjWAcW7RgSlSSLwHfwYlxZ0HHUaAUfsndqQcIiMLMrK2WDYuQxhB6iGIRqLqeuB7UsaQA7QUAe38myhcX/iD3jwA/gDjfA0ggggwc3eKOZGKLpUxHEL4l4sAl/NtJSlcedBlIhicwygs/QzbUkrh4AHz1257bykToM25FCBj4MVFoClgxqvzSpx7QBHIuGdhLe0sk3NOI5yIgCh8zO04tvNH0paN4WcWAxxEwNMf/vobLLCnOkgBDhQyuuTv8UU2svwq5MwB/iQRLDaPUju0GRWrAoh6QWkzyQx5izRRCtMhBu6BAOZp7IjuI0oBMyyLgZNouQoUlN0xbS+ImgdYUkGmruASMvXFdyitRzlDtRLc9CbD5AxlJbgxrGw8JZMHwmjzFQeWJpMzZBEwB1zU7/DhaQmVrY8xQBSBYe1gr9pWkzPUKoHU+WDk/9prUoAkAp23AzTcV7ykre28QaRMjwCus/N20BfGqiWXAkQKU/+gSa6wPFXXD08jFCJw7aD70XUzvXBdZ40Vi8XW29wDAVklKFsguaDDCOakwABYBBTgg+aAQ9u1BTM1iPBP/GTNKB40lRKDYmGJ7hc9WZj0mwCcaOxW6TgThGmbJ60IwzZrcnYWAxyIVjdfx4rz9LKRss8AvJgCjbvWbvIGW0WoXgR+cKrG2RqD7POGRVVlCoE20zRtqGkEAKyXqV5Q4uCfQw5gMNGyukJp1gSASs4ePcgydWE1HlglvgAw5wDmawDq3APLwRIOFIu/ahycA0yVI04Rwt6UtjkO3AztX/4qdUAHuuJEp+xk7YXjjnTSqwjfDkpU/tTn1gWoFeis+Qvs5zD4d2es+H8vT5+2TOFr/QT+5zJb7HNMJQAAAABJRU5ErkJggg==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&family=Caveat:wght@600&display=swap">
 <style>
 /* Dirección: institucional Anáhuac. Acento naranja comprometido sobre grafito cálido; neutrales teñidos hacia el naranja. Par tipográfico: Bricolage Grotesque (titulares) + IBM Plex Sans (texto). Densidad 6 · Movimiento 4 · Variación 6. Composición asimétrica, alineada a la izquierda. */
 :root{
@@ -464,6 +465,101 @@ td.avg{font-family:var(--f-display);font-weight:800;font-size:25px;letter-spacin
 .myqr .btn:not(.primary):hover{background:rgba(255,240,228,.08)}
 @media (max-width:620px){.myqr{grid-template-columns:minmax(0,1fr);justify-items:start}.myqr .qr{width:180px;height:180px}}
 
+/* Encabezado según referencia: logo, lema y tarjetas de navegación */
+.hero{background:radial-gradient(42% 60% at 0% 0%,rgba(226,87,15,.55),transparent 70%),radial-gradient(40% 55% at 100% 100%,rgba(226,87,15,.45),transparent 70%),linear-gradient(160deg,#211a16,#0f0c0a 70%)}
+.hero canvas{-webkit-mask-image:none;mask-image:none;opacity:.85}
+.hero-top{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr);gap:24px 40px;align-items:center;padding:clamp(26px,4.5vw,52px) clamp(22px,4.5vw,52px) 0}
+@media (max-width:860px){.hero-top{grid-template-columns:minmax(0,1fr)}}
+.lockup{display:flex;align-items:center;gap:clamp(16px,3vw,30px)}
+.lockup img{width:clamp(96px,14vw,150px);height:auto;flex:none;filter:drop-shadow(1.5px 0 0 #fff) drop-shadow(-1.5px 0 0 #fff) drop-shadow(0 1.5px 0 #fff) drop-shadow(0 -1.5px 0 #fff) drop-shadow(0 10px 24px rgba(226,87,15,.35))}
+.lockup .wm{min-width:0}
+.lockup .uni{font-family:'Roboto Slab',Georgia,serif;font-weight:800;font-size:clamp(30px,4.6vw,54px);line-height:.95;letter-spacing:-.01em;color:#fff;text-transform:uppercase}
+.lockup .rule{height:3px;width:min(100%,340px);background:var(--accent);margin:14px 0 12px;border-radius:2px}
+.lockup .prog{margin:0;max-width:none;display:block;font-family:var(--f-display);font-weight:800;font-size:clamp(22px,3.3vw,40px);line-height:1;color:var(--accent);text-transform:uppercase;letter-spacing:-.01em;padding-left:14px;border-left:3px solid var(--accent)}
+.lockup .lic{display:block;margin-top:8px;padding-left:17px;font-size:clamp(12px,1.3vw,14.5px);letter-spacing:.16em;text-transform:uppercase;color:var(--hero-muted);font-weight:500}
+.hero-top .chips{margin-top:20px}
+.motto{text-align:center;margin:clamp(22px,3.5vw,36px) 0 0;font-size:clamp(13px,1.5vw,16px);letter-spacing:.42em;text-transform:uppercase;color:#f3ece6;font-weight:500;padding:0 16px}
+.hnav{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:clamp(18px,3vw,28px) clamp(22px,4.5vw,52px) clamp(28px,4vw,44px)}
+.hcard{display:flex;align-items:center;gap:14px;min-height:76px;padding:12px 14px;border-radius:14px;text-align:left;color:#fff;background:linear-gradient(160deg,rgba(255,240,228,.07),rgba(255,240,228,.02));border:1px solid rgba(255,190,150,.28);transition:border-color .2s var(--ease),box-shadow .2s var(--ease),background .2s var(--ease),transform .15s var(--ease)}
+.hcard:hover{border-color:rgba(255,140,70,.75);box-shadow:0 0 22px -6px rgba(255,110,40,.7);transform:translateY(-1px)}
+.hcard .ib{width:46px;height:46px;flex:none;border-radius:50%;display:grid;place-items:center;color:#ff8a45;background:radial-gradient(circle at 35% 30%,rgba(255,138,69,.28),rgba(120,40,0,.25));border:1px solid rgba(255,138,69,.45)}
+.hcard .tx{flex:1;min-width:0}
+.hcard b{display:block;font-family:var(--f-display);font-size:17px;font-weight:700;line-height:1.2}
+.hcard small{display:block;font-size:13px;color:#c9bcb2;line-height:1.3;margin-top:2px}
+.hcard .chev{color:#c9bcb2;flex:none}
+.hcard[aria-current="page"]{border-color:#ff7a33;background:linear-gradient(160deg,rgba(226,87,15,.34),rgba(226,87,15,.12));box-shadow:0 0 0 1px #ff7a33,0 0 30px -4px rgba(255,110,40,.75)}
+.hcard[aria-current="page"] .ib{background:radial-gradient(circle at 35% 30%,#ff9a5c,#c4470a);color:#fff;border-color:#ffb27f}
+.hcard.coordc{border-style:dashed}
+.hero .hero-side{align-self:center}
+@media (max-width:720px){.hnav{grid-template-columns:1fr 1fr;gap:8px}.hcard{min-height:64px;padding:10px;gap:10px}.hcard .ib{width:38px;height:38px}.hcard small,.hcard .chev{display:none}
+  body.on-eval .hnav,body.on-eval .motto,body.on-eval .lockup .lic,body.on-eval .hero-top .chips{display:none}
+  body.on-eval .lockup img{width:64px}body.on-eval .lockup .uni{font-size:24px}body.on-eval .lockup .prog{font-size:18px}body.on-eval .hero-top{padding-bottom:20px}}
+
+/* ===== Áreas refinadas: accesos, programa y resultados ===== */
+/* Accesos personales: panel grafito con tarjetas claras */
+.acc-strip{position:relative;overflow:hidden;padding:clamp(20px,3vw,30px);border-radius:18px;color:var(--hero-ink);
+  background:radial-gradient(60% 90% at 100% 0%,rgba(226,87,15,.35),transparent 65%),linear-gradient(160deg,#2a211c,#120e0c 75%);border:1px solid #000;box-shadow:0 20px 44px -26px rgba(27,22,19,.75)}
+.acc-strip::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,240,228,.07) 1px,transparent 1px);background-size:18px 18px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 70%);mask-image:linear-gradient(180deg,#000,transparent 70%)}
+.acc-strip>*{position:relative;z-index:1}
+.acc-strip .ah h2{color:#fff}
+.acc-strip .ah p{color:var(--hero-muted)}
+.acc-strip .eyebrow-s{color:#ff9a5c}
+.mini-q{grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:14px}
+.mq{position:relative;justify-content:space-between;height:100%;padding:18px 14px 14px;border-radius:16px;border:1px solid rgba(255,190,150,.22);background:linear-gradient(180deg,#fffdfb,#f7f1eb);box-shadow:0 10px 24px -16px rgba(0,0,0,.6);color:var(--paper-ink);transition:transform .15s var(--ease),box-shadow .2s var(--ease)}
+.mq:hover{transform:translateY(-2px);box-shadow:0 16px 30px -16px rgba(226,87,15,.55)}
+.mq .qr{position:relative;border:0;box-shadow:none;background:#fff}
+.mq .qr::before{content:"";position:absolute;inset:-5px;pointer-events:none;
+  background:linear-gradient(var(--accent),var(--accent)) top left/16px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) top left/3px 16px no-repeat,
+  linear-gradient(var(--accent),var(--accent)) top right/16px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) top right/3px 16px no-repeat,
+  linear-gradient(var(--accent),var(--accent)) bottom left/16px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) bottom left/3px 16px no-repeat,
+  linear-gradient(var(--accent),var(--accent)) bottom right/16px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) bottom right/3px 16px no-repeat}
+.mq .who-t{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:62px}
+.mq b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#1d1714}
+.mq small{color:#6b5f57;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mq .acts{display:grid;grid-template-columns:1fr 36px;gap:6px;width:100%}
+.mq .acts .btn{min-height:36px;padding:5px 8px;font-size:13px;white-space:nowrap}
+.mq .go{width:100%;min-height:40px;font-size:14.5px;white-space:nowrap}
+.mq.guest{background:linear-gradient(180deg,rgba(226,87,15,.16),rgba(226,87,15,.06));border:1.5px dashed rgba(255,140,70,.7);color:#fff}
+.mq.guest b{color:#fff}.mq.guest small{color:#d8cbc1}
+.mq.guest .ico{width:118px;height:118px;border-radius:14px;display:grid;place-items:center;background:rgba(255,240,228,.06);border:1px solid rgba(255,190,150,.3);color:#ff8a45}
+.mq.guest .btn{background:transparent;color:#fff;border-color:rgba(255,190,150,.5);box-shadow:none}
+.mq.guest .btn:hover{background:rgba(255,240,228,.1)}
+.acc-strip .btn.primary{box-shadow:0 1px 0 rgba(120,40,0,.25),0 10px 24px -10px rgba(255,110,40,.9),inset 0 1px 0 rgba(255,255,255,.25)}
+
+/* Programa: filas con más relieve */
+.day-card{padding:0;overflow:hidden}
+.day-card .day-head{padding:20px 24px 16px;margin:0;border-bottom:0;background:linear-gradient(180deg,var(--surface2),var(--surface));box-shadow:inset 0 -2px 0 var(--ink)}
+.day-card .slots{padding:4px 24px 16px}
+.slot{border-radius:12px;padding:14px 12px;margin:0 -12px;border-top:0;position:relative;transition:background .15s var(--ease)}
+.slot:not(.brk)+.slot:not(.brk)::before{content:"";position:absolute;left:12px;right:12px;top:0;height:1px;background:var(--line)}
+.slot:not(.brk):hover{background:color-mix(in srgb,var(--accent-soft) 55%,var(--surface))}
+.slot:not(.brk):hover::before,.slot:not(.brk):hover+.slot::before{opacity:0}
+.slot .t>span:first-child{display:inline-block;align-self:flex-start;padding:3px 10px;border-radius:8px;background:var(--ink);color:var(--bg);font-size:16px}
+.slot.moved .t>span:first-child{background:var(--accent);color:#fff}
+.slot .av{background:linear-gradient(160deg,var(--surface),var(--surface2));box-shadow:0 0 0 3px var(--surface),0 0 0 4px var(--line2)}
+.sigpill{display:inline-flex;flex-direction:column;gap:5px;min-width:150px;padding:8px 12px;border-radius:10px;background:var(--surface2);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted)}
+.sigpill .sg{display:flex;align-items:center;gap:6px}
+.sigpill .meter{height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.sigpill .meter i{display:block;height:100%;background:var(--ok);border-radius:3px}
+.sigpill.done{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
+.slot.brk{background:repeating-linear-gradient(135deg,var(--surface2) 0 10px,var(--surface) 10px 20px);border:1px dashed var(--line2);margin:8px -4px}
+
+/* Resultados: tabla con encabezado grafito y columna de promedio destacada */
+.res-table{border:1px solid #000;box-shadow:0 18px 40px -28px rgba(27,22,19,.7)}
+.res-table thead th{background:linear-gradient(180deg,#2a211c,#16110e);color:#e9ddd3;border-bottom:3px solid var(--accent);font-size:12px;letter-spacing:.08em}
+.res-table thead th:first-child{background:linear-gradient(180deg,#2a211c,#16110e)}
+.res-table thead th.th-avg{background:linear-gradient(180deg,#c94a0a,#9a3606);color:#fff}
+.res-table tbody tr:nth-child(even) td,.res-table tbody tr:nth-child(even) th{background:color-mix(in srgb,var(--surface2) 70%,var(--surface))}
+.res-table tbody tr:hover td,.res-table tbody tr:hover th{background:color-mix(in srgb,var(--accent-soft) 60%,var(--surface))}
+.res-table td.avg{background:color-mix(in srgb,var(--accent-soft) 45%,var(--surface))!important;border-left:1px solid color-mix(in srgb,var(--accent) 25%,var(--line))}
+.res-table .draft{display:inline-block;white-space:nowrap;padding:4px 8px;border-radius:8px;background:var(--warn-soft);font-style:normal}
+.res-table .empty{display:inline-block;width:18px;height:2px;border-radius:2px;background:var(--line2);vertical-align:middle}
+.res-table .score{display:inline-flex;align-items:center;justify-content:center;min-width:46px;padding:4px 8px;border-radius:8px;background:var(--ok-soft);color:var(--ok);font-weight:700}
+.res-table .pend{display:inline-block;padding:4px 10px;border-radius:8px;font-family:var(--f-body);font-size:13px;font-weight:600;letter-spacing:0;color:var(--muted);background:var(--surface);border:1px dashed var(--line2)}
+.repbtn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 10px;border-radius:8px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line2));background:var(--surface);color:var(--accent-deep);font-weight:600;font-size:13px;transition:background .15s var(--ease),border-color .15s var(--ease)}
+.repbtn:hover{background:var(--accent-soft);border-color:var(--accent)}
+@media (max-width:440px){.mini-q{grid-template-columns:1fr 1fr;gap:10px}.mq{padding:14px 10px 10px}.mq .qr{width:104px;height:104px}.mq .acts .btn:not(.icon){font-size:0;gap:0}.mq .acts .btn:not(.icon) .ic{width:16px;height:16px}.mq.guest .ico{width:104px;height:104px}}
+
 [hidden]{display:none!important}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:10px;font-size:15px;font-weight:500;z-index:40;max-width:90vw;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 @media (max-width:720px){body.on-eval #toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
@@ -475,11 +571,13 @@ td.avg{font-family:var(--f-display);font-weight:800;font-size:25px;letter-spacin
 <div class="wrap">
   <header class="hero">
     <canvas id="heroCanvas" aria-hidden="true"></canvas>
-    <div class="hero-in">
+    <div class="hero-top">
       <div>
-        <div class="brandline"><span class="mark"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4h10v17M14 9h6v12M2 21h20"/></svg></span>Universidad Anáhuac Cancún · EIN</div>
-        <h1 id="heroTitle">Evaluación de <em>Prácticas Profesionales</em></h1>
-        <p class="lede" id="heroLede">Presentaciones finales de la Licenciatura en Administración y Dirección de Empresas.</p>
+        <div class="lockup">
+          <img id="aMark" src="data:image/png;base64,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" alt="Universidad Anáhuac Cancún" width="240" height="217">
+          <div class="wm"><div class="uni">Anáhuac<br>Cancún</div><div class="rule" aria-hidden="true"></div>
+            <h1 id="heroTitle" class="prog">Prácticas Profesionales</h1><span class="lic" id="heroLede">Administración y Dirección de Empresas</span></div>
+        </div>
         <div class="chips">
           <span class="chip"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="chipDate">Lunes 23 de noviembre · 08:00 h</span></span>
           <span class="chip"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span id="chipVenue">Edificio 1, planta baja</span></span>
@@ -488,6 +586,8 @@ td.avg{font-family:var(--f-display);font-weight:800;font-size:25px;letter-spacin
       </div>
       <aside class="hero-side" id="heroSide" aria-label="Avance del jurado" aria-live="polite"></aside>
     </div>
+    <p class="motto">Líderes que trascienden</p>
+    <div class="hnav" id="heroNav" role="navigation" aria-label="Secciones principales"></div>
   </header>
   <div class="navrow"><nav role="tablist" aria-label="Secciones" id="tabs"></nav><div class="edit-toggle" id="editToggle" hidden><label class="switch"><input type="checkbox" id="editModeIn" aria-label="Modo edición"> Editar</label></div></div>
   <main id="app" role="tabpanel" tabindex="-1" aria-labelledby="tab-programa"></main>
@@ -615,6 +715,7 @@ var IC={
  shield:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
  plus:'<path d="M12 5v14M5 12h14"/>',
+ chevr:'<path d="m9 6 6 6-6 6"/>',
  prev:'<path d="M19 12H5m5-5-5 5 5 5"/>',
  qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>',
  link:'<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>',
@@ -656,14 +757,21 @@ function saveSched(){
   else{try{persistLocal();}catch(e){}}
   render();
 }
+var HSUB={programa:'Fechas y detalles',evaluar:'Califica con la rúbrica',resultados:'Consulta calificaciones',reportes:'Descarga documentos',rubrica:'Criterios de evaluación',cartas:'Invitaciones y constancias',accesos:'Códigos QR y ligas',seguimiento:'Avance del jurado',coord:'Panel de control'};
+function renderHeroNav(){var hn=document.getElementById('heroNav');if(!hn)return;
+  hn.innerHTML=TABS.filter(function(t){return (t[0]!=='coord'&&t[0]!=='seguimiento')||isCoord();}).map(function(t){var on=S.tab===t[0];
+    return '<button class="hcard'+((t[0]==='coord'||t[0]==='seguimiento')?' coordc':'')+'" data-t="'+t[0]+'"'+(on?' aria-current="page"':'')+'><span class="ib">'+ic(t[2],22)+'</span><span class="tx"><b>'+t[1]+'</b><small>'+(HSUB[t[0]]||'')+'</small></span><span class="chev">'+ic('chevr',18)+'</span></button>';}).join('');}
+document.getElementById('heroNav').addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(!b)return;S.tab=b.dataset.t;try{history.replaceState(null,'','#'+S.tab);}catch(x){}S.lastHash=S.tab;S.preWho=null;render();var nv=document.querySelector('.navrow');if(nv)nv.scrollIntoView({behavior:'smooth',block:'start'});});
 function updateHero(){
   var a=document.getElementById('chipDate'),b=document.getElementById('chipVenue');if(!a||!ST.length)return;
   var days={};ST.forEach(function(s){days[s.d]=1;});var n=Object.keys(days).length,f=ST[0];
   a.textContent=cap(dayLabel(f.d).replace(/ de \d{4}$/,''))+' · '+f.h+' h'+(n>1?' y '+(n-1)+(n>2?' jornadas más':' jornada más'):'');
   b.textContent=S.sched.venue;var cc=document.getElementById('chipCount');if(cc)cc.textContent=ST.length+' practicantes · '+CORE+' evaluadores + invitado';
   var ht=document.getElementById('heroTitle'),hl=document.getElementById('heroLede');
-  if(ht)ht.innerHTML=esc(S.sched.title||'Evaluación de')+' <em>'+esc(S.sched.hl||'Prácticas Profesionales')+'</em>';
-  if(hl)hl.textContent=S.sched.lede||'Presentaciones finales de la Licenciatura en Administración y Dirección de Empresas.';
+  if(ht)ht.textContent=S.sched.hl||'Prácticas Profesionales';
+  if(hl)hl.textContent=S.sched.lic||'Administración y Dirección de Empresas';
+  var mo=document.querySelector('.motto');if(mo)mo.textContent=S.sched.motto||'Líderes que trascienden';
+  renderHeroNav();
   var hs=document.getElementById('heroSide');
   if(hs){var tot=ST.length*CORE,sg=0,fin=0,bw=byWho();
     ST.forEach(function(st){var nc=0;EVALS.forEach(function(e){if(e.guest)return;var ev=bw[e.k]&&bw[e.k].evals&&bw[e.k].evals[st.id];if(ev&&ev.signedAt)nc++;});sg+=nc;if(nc>=CORE)fin++;});
@@ -736,7 +844,7 @@ function viewPrograma(){
     return '<div class="slot'+(movedS(s)?' moved':'')+'"><div class="t"><span>'+esc(tx(s))+'</span><small>'+ic('clock',13)+'Retroalimentación '+esc(fx(s))+'</small></div>'+
       '<span class="av">'+esc(ini(s.n))+'</span>'+
       '<div class="who"><b>'+esc(s.n)+'</b><span>'+ic('building',15)+'<span>'+esc(s.e)+'</span></span></div>'+
-      '<div><span class="pill '+(n===EVALS.length?'ok':'')+'">'+ic('pen',14)+n+' de '+EVALS.length+' firmas'+dots(n)+'</span>'+(movedS(s)?' <span class="pill acc">Horario modificado</span>':'')+'</div></div>';
+      '<div><span class="sigpill'+(n>=CORE?' done':'')+'"><span class="sg">'+ic(n>=CORE?'check':'pen',14)+n+' de '+EVALS.length+' firmas</span><span class="meter" aria-hidden="true"><i style="width:'+Math.round(n/EVALS.length*100)+'%"></i></span></span>'+(movedS(s)?' <span class="pill acc">Horario modificado</span>':'')+'</div></div>';
   }
   var days=[];ST.forEach(function(s){var g=days.filter(function(x){return x.d===s.d;})[0];if(!g){g={d:s.d,list:[]};days.push(g);}g.list.push(s);});
   var cards=days.map(function(g){
@@ -747,7 +855,7 @@ function viewPrograma(){
     });
     var ce=addMin(last.h,20);
     rows+=brk(ce+' – '+addMin(ce,10),'flag','Retroalimentación final y cierre del evento');
-    return '<section class="card"><div class="day-head"><div class="sec-h"><span class="badge">'+ic('calendar',20)+'</span><h2>'+esc(cap(dayLabel(g.d)))+'</h2></div><span class="muted small">Inicio '+first.h+' h · '+esc(S.sched.venue)+'</span></div>'+rows+'</section>';
+    return '<section class="card day-card"><div class="day-head"><div class="sec-h"><span class="badge">'+ic('calendar',20)+'</span><h2>'+esc(cap(dayLabel(g.d)))+'</h2></div><span class="muted small">Inicio '+first.h+' h · '+esc(S.sched.venue)+'</span></div><div class="slots">'+rows+'</div></section>';
   }).join('');
   var editRow=S.canEdit&&!S.edit?'<div class="secbar">'+coordBtn('practicantes','Editar practicantes')+coordBtn('jurado','Editar jurado')+'<button class="btn" data-act="editsched">'+ic('pen',18)+'Editar días, horarios y lugar</button></div>':'';
   return '<div class="stack">'+
@@ -836,23 +944,23 @@ function viewEvaluar(){
 
 function viewResultados(){
   var bw=byWho(), all=0, nrows=0, sum=0;
-  var head='<tr><th scope="col">Practicante y empresa</th>'+EVALS.map(function(e){return '<th scope="col">'+esc(e.guest?'Invitado (empresa)':e.s)+'</th>';}).join('')+'<th>Promedio</th></tr>';
+  var head='<tr><th scope="col">Practicante y empresa</th>'+EVALS.map(function(e){return '<th scope="col">'+esc(e.guest?'Invitado (empresa)':e.s)+'</th>';}).join('')+'<th scope="col" class="th-avg">Promedio</th></tr>';
   var body=ST.map(function(s){
     var vals=[], cells=EVALS.map(function(e){
       var ev=bw[e.k]&&bw[e.k].evals&&bw[e.k].evals[s.id];
-      if(ev&&ev.signedAt){var v=score(ev);vals.push(v);all++;return '<td class="num"><b>'+fmt(v)+'</b></td>';}
+      if(ev&&ev.signedAt){var v=score(ev);vals.push(v);all++;return '<td class="num"><span class="score">'+fmt(v)+'</span></td>';}
       if(started(ev))return '<td><span class="draft">en borrador</span></td>';
-      return '<td class="muted">–</td>';
+      return '<td><span class="empty" role="img" aria-label="Sin evaluar"></span></td>';
     }).join('');
     var avg=vals.length?vals.reduce(function(a,b){return a+b;},0)/vals.length:null;
     if(avg!=null){sum+=avg;nrows++;}
-    var cell=avg==null?'<td class="avg muted">–</td>':'<td class="avg num">'+fmt(avg)+'<div class="bar"><i style="width:'+Math.min(100,avg)+'%"></i></div><div class="small muted" style="font-family:var(--f-body);font-weight:500;margin-top:4px">'+band(avg)+' · '+vals.length+' de '+EVALS.length+(vals.length<EVALS.length?' (parcial)':'')+'</div></td>';
-    return '<tr><th scope="row" style="font-weight:400;font-size:15px;color:var(--ink)"><div class="cellp"><span class="av sm">'+esc(ini(s.n))+'</span><div><b>'+esc(s.n)+'</b><span class="muted small">'+esc(s.e)+'</span><button class="linkbtn" data-act="toreport" data-sid="'+s.id+'">Ver reporte '+ic('arrow',14)+'</button></div></div></th>'+cells+cell+'</tr>';
+    var cell=avg==null?'<td class="avg"><span class="pend">Sin firmas aún</span></td>':'<td class="avg num">'+fmt(avg)+'<div class="bar"><i style="width:'+Math.min(100,avg)+'%"></i></div><div class="small muted" style="font-family:var(--f-body);font-weight:500;margin-top:4px">'+band(avg)+' · '+vals.length+' de '+EVALS.length+(vals.length<EVALS.length?' (parcial)':'')+'</div></td>';
+    return '<tr><th scope="row" style="font-weight:400;font-size:15px;color:var(--ink)"><div class="cellp"><span class="av sm">'+esc(ini(s.n))+'</span><div><b>'+esc(s.n)+'</b><span class="muted small">'+esc(s.e)+'</span><button class="repbtn" data-act="toreport" data-sid="'+s.id+'" aria-label="Ver reporte de '+esc(s.n)+'">'+ic('file',14)+'Ver reporte</button></div></div></th>'+cells+cell+'</tr>';
   }).join('');
   var note=S.mode==='local'?'<div class="notice">'+ic('info',18)+'<span>'+(window.claude?'Estás viendo solo lo guardado en este navegador. Con tu sesión de Claude se muestran las firmas de todos los evaluadores.':'Estás viendo lo guardado en este navegador.')+'</span></div>':'';
   return '<div class="stack">'+note+'<div class="stats">'+stat('pen','Evaluaciones firmadas',all+' de '+(ST.length*EVALS.length))+stat('award','Promedio del grupo (con firmas)',nrows?fmt(sum/nrows):'–')+'</div>'+
-   '<div class="secbar">'+coordBtn('firmas','Gestionar firmas')+'<button class="btn" data-act="csv"'+(S.dwn?'':' disabled')+'>'+ic('download',18)+'Exportar a Excel (.csv)</button></div>'+
-   '<div class="tablewrap"><table><caption class="sr">Calificaciones firmadas por practicante y evaluador</caption><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'+
+   '<div class="secbar">'+coordBtn('firmas','Gestionar firmas')+'<button class="btn dark" data-act="csv"'+(S.dwn?'':' disabled')+'>'+ic('download',18)+'Exportar a Excel (.csv)</button></div>'+
+   '<div class="tablewrap res-table"><table><caption class="sr">Calificaciones firmadas por practicante y evaluador</caption><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'+
    '<p class="muted small" style="margin:0">Solo cuentan las evaluaciones firmadas. El promedio es la media de las calificaciones de los evaluadores que ya firmaron, sobre 100 puntos.</p></div>';
 }
 
@@ -1107,8 +1215,8 @@ function coordParts(){
   var sc=S.sched,wsum=CRIT.reduce(function(a,c){return a+(+c.w||0);},0);
   var nav=[['evento','Evento'],['practicantes','Practicantes'],['jurado','Jurado'],['rubrica','Rúbrica'],['firmas','Firmas'],['datos','Datos']].map(function(x){return '<a class="btn ghost sm" href="#co-'+x[0]+'" data-act="cojump" data-sec="'+x[0]+'">'+x[1]+'</a>';}).join('');
   var evento='<section class="card stack co-sec" id="co-evento"><div class="co-h"><span class="idx">01</span><h3>Evento</h3><p class="muted small">Títulos del encabezado, lugar y coffee break.</p></div><div class="co-grid">'+
-    cfgIn('top:title',sc.title||'Evaluación de','Título')+cfgIn('top:hl',sc.hl||'Prácticas Profesionales','Texto destacado (naranja)')+cfgIn('top:venue',sc.venue,'Lugar')+
-    cfgIn('top:cs',sc.cs,'Coffee break, inicio','time')+cfgIn('top:ce',sc.ce,'Coffee break, fin','time')+'</div>'+cfgIn('top:lede',sc.lede||'Presentaciones finales de la Licenciatura en Administración y Dirección de Empresas.','Descripción','textarea')+'</section>';
+    cfgIn('top:hl',sc.hl||'Prácticas Profesionales','Título (naranja)')+cfgIn('top:lic',sc.lic||'Administración y Dirección de Empresas','Programa')+cfgIn('top:motto',sc.motto||'Líderes que trascienden','Lema')+cfgIn('top:venue',sc.venue,'Lugar')+
+    cfgIn('top:cs',sc.cs,'Coffee break, inicio','time')+cfgIn('top:ce',sc.ce,'Coffee break, fin','time')+'</div>'+'</section>';
   var prs=ST.map(function(s,i){var del=S.confirm==='st:'+s.id;
     return '<div class="co-row"><span class="co-n num">'+('0'+(i+1)).slice(-2)+'</span><div class="co-fields co-st">'+cfgIn('st:'+s.id+':n',s.n,'Nombre')+cfgIn('st:'+s.id+':e',s.e,'Empresa')+cfgIn('st:'+s.id+':rep',s.rep||'','Representante')+cfgIn('st:'+s.id+':d',s.d,'Fecha','date')+cfgIn('st:'+s.id+':h',s.h,'Hora','time')+'</div>'+
       '<button class="btn '+(del?'danger':'ghost')+' sm" data-act="co-del" data-id="'+s.id+'" aria-label="Quitar a '+esc(s.n)+'">'+(del?'Confirmar':ic('trash',16))+'</button></div>';}).join('');
@@ -1213,6 +1321,7 @@ function qrPNG(e,sid){
     var cv=document.createElement('canvas');cv.width=W;cv.height=H;var x=cv.getContext('2d');
     x.fillStyle='#ffffff';x.fillRect(0,0,W,H);
     x.fillStyle='#e2570f';x.fillRect(0,0,W,10);
+    var am=document.getElementById('aMark');if(am&&am.complete){try{x.drawImage(am,W/2-24,14,48,43);}catch(err){}}
     x.fillStyle='#0e1220';
     for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(q.isDark(r,c))x.fillRect(pad+c*cell,pad+r*cell,cell,cell);
     x.textAlign='center';x.font='700 30px "Outfit","Segoe UI",sans-serif';
@@ -1249,9 +1358,9 @@ function guestAccess(){
 }
 function accessStrip(){
   var core=EVALS.filter(function(e){return !e.guest;});
-  var cards=core.map(function(e){var url=evLink(e);return '<div class="mq"><div class="qr">'+qrSVG(url)+'</div><div><b>'+esc(e.n)+'</b><small>'+esc(e.cargo)+'</small></div><div class="row"><button class="btn sm" data-act="copylink" data-k="'+e.k+'" aria-label="Copiar liga de '+esc(e.n)+'" style="white-space:nowrap">'+ic('copy',14)+'Copiar</button><button class="btn sm icon" data-act="dlqr" data-k="'+e.k+'" aria-label="Descargar QR de '+esc(e.n)+'"'+(S.dwn?'':' disabled')+'>'+ic('download',14)+'</button></div><button class="btn primary sm" style="width:100%" data-act="actas" data-k="'+e.k+'" data-sid="">'+ic('arrow',14)+'Entrar como '+esc(e.n.split(' ')[0])+'</button></div>';}).join('');
-  cards+='<div class="mq"><div class="qr" style="display:grid;place-items:center;color:var(--accent)">'+ic('building',44)+'</div><div><b>Invitados de empresa</b><small>Un QR por practicante para su empresario</small></div><div class="row"><button class="btn sm" data-act="gotab" data-t="accesos">'+ic('qr',14)+'Ver los 10 QR</button></div></div>';
-  return '<section class="acc-strip" aria-labelledby="accT"><div class="ah"><div><span class="eyebrow-s">Accesos personales</span><h2 id="accT">Cada evaluador tiene su liga y su código QR.</h2><p>Escanea o abre la liga: entra directo a su evaluación con su nombre seleccionado.</p></div><button class="btn primary" data-act="dlqrall"'+(S.dwn?'':' disabled')+'>'+ic('zip',18)+'Descargar todos los QR</button></div><div class="mini-q">'+cards+'</div></section>';
+  var cards=core.map(function(e){var url=evLink(e);return '<div class="mq"><div class="qr">'+qrSVG(url)+'</div><div class="who-t"><b>'+esc(e.n)+'</b><small>'+esc(e.cargo)+'</small></div><div class="acts"><button class="btn sm" data-act="copylink" data-k="'+e.k+'" aria-label="Copiar liga de '+esc(e.n)+'">'+ic('copy',14)+'Copiar liga</button><button class="btn sm icon" data-act="dlqr" data-k="'+e.k+'" aria-label="Descargar QR de '+esc(e.n)+'" title="Descargar QR"'+(S.dwn?'':' disabled')+'>'+ic('download',14)+'</button></div><button class="btn primary go" data-act="actas" data-k="'+e.k+'" data-sid="" aria-label="Evaluar como '+esc(e.n)+'">Evaluar'+ic('arrow',16)+'</button></div>';}).join('');
+  cards+='<div class="mq guest"><div class="ico">'+ic('building',46)+'</div><div class="who-t"><b>Invitados de empresa</b><small>Un QR por practicante para su empresario</small></div><button class="btn go" data-act="gotab" data-t="accesos">'+ic('qr',16)+'Ver los '+ST.length+' QR</button></div>';
+  return '<section class="acc-strip" aria-labelledby="accT"><div class="ah"><div><span class="eyebrow-s">Accesos personales</span><h2 id="accT">Cada evaluador tiene su liga y su código QR.</h2><p>Cada código abre la evaluación con el nombre de esa persona ya seleccionado. Imprímelos o compártelos por correo.</p></div><button class="btn primary" data-act="dlqrall"'+(S.dwn?'':' disabled')+'>'+ic('zip',18)+'Descargar todos los QR</button></div><div class="mini-q">'+cards+'</div></section>';
 }
 function myAccess(w){
   var e=evByK(w);if(!e||e.guest)return '';
