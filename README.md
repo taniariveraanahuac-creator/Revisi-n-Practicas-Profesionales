@@ -4,6 +4,18 @@ Plataforma de evaluación de las presentaciones finales de Prácticas Profesiona
 
 Coordinación: Mtra. Tania Rivera Lozano.
 
+## Qué hace
+
+- **Programa:** horario de las 10 presentaciones con coffee break y avance de firmas por practicante.
+- **Evaluar:** rúbrica de 7 criterios y 4 niveles, firma con folio, avance automático al siguiente alumno y cambio de evaluador en un toque.
+- **Evaluador invitado:** el representante de cada empresa evalúa con su nombre y cargo desde su propio QR.
+- **Resultados:** tabla con las calificaciones firmadas y el promedio, exportable a Excel (.csv).
+- **Reportes:** un reporte por practicante en Word (.docx), uno por uno o todos en .zip.
+- **Rúbrica:** criterios y niveles en vista de alto contraste.
+- **Cartas:** invitaciones en Word para empresas y evaluadores, con su liga de acceso.
+- **Accesos:** liga y código QR personal para cada evaluador y para cada empresa invitada.
+- **Seguimiento y Coordinación (solo coordinación):** qué evalúa cada quien en vivo, reapertura de firmas, edición de practicantes, jurado, rúbrica y horarios, y respaldo en .json.
+
 ## Contenido
 
 | Archivo | Para qué sirve |
