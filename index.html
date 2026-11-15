@@ -495,6 +495,71 @@ td.avg{font-family:var(--f-display);font-weight:800;font-size:25px;letter-spacin
   body.on-eval .hnav,body.on-eval .motto,body.on-eval .lockup .lic,body.on-eval .hero-top .chips{display:none}
   body.on-eval .lockup img{width:64px}body.on-eval .lockup .uni{font-size:24px}body.on-eval .lockup .prog{font-size:18px}body.on-eval .hero-top{padding-bottom:20px}}
 
+/* ===== Áreas refinadas: accesos, programa y resultados ===== */
+/* Accesos personales: panel grafito con tarjetas claras */
+.acc-strip{position:relative;overflow:hidden;padding:clamp(20px,3vw,30px);border-radius:18px;color:var(--hero-ink);
+  background:radial-gradient(60% 90% at 100% 0%,rgba(226,87,15,.35),transparent 65%),linear-gradient(160deg,#2a211c,#120e0c 75%);border:1px solid #000;box-shadow:0 20px 44px -26px rgba(27,22,19,.75)}
+.acc-strip::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,240,228,.07) 1px,transparent 1px);background-size:18px 18px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 70%);mask-image:linear-gradient(180deg,#000,transparent 70%)}
+.acc-strip>*{position:relative;z-index:1}
+.acc-strip .ah h2{color:#fff}
+.acc-strip .ah p{color:var(--hero-muted)}
+.acc-strip .eyebrow-s{color:#ff9a5c}
+.mini-q{grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:14px}
+.mq{position:relative;justify-content:space-between;height:100%;padding:18px 14px 14px;border-radius:16px;border:1px solid rgba(255,190,150,.22);background:linear-gradient(180deg,#fffdfb,#f7f1eb);box-shadow:0 10px 24px -16px rgba(0,0,0,.6);color:var(--paper-ink);transition:transform .15s var(--ease),box-shadow .2s var(--ease)}
+.mq:hover{transform:translateY(-2px);box-shadow:0 16px 30px -16px rgba(226,87,15,.55)}
+.mq .qr{position:relative;border:0;box-shadow:none;background:#fff}
+.mq .qr::before{content:"";position:absolute;inset:-5px;pointer-events:none;
+  background:linear-gradient(var(--accent),var(--accent)) top left/16px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) top left/3px 16px no-repeat,
+  linear-gradient(var(--accent),var(--accent)) top right/16px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) top right/3px 16px no-repeat,
+  linear-gradient(var(--accent),var(--accent)) bottom left/16px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) bottom left/3px 16px no-repeat,
+  linear-gradient(var(--accent),var(--accent)) bottom right/16px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) bottom right/3px 16px no-repeat}
+.mq .who-t{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:62px}
+.mq b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#1d1714}
+.mq small{color:#6b5f57;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mq .acts{display:grid;grid-template-columns:1fr 36px;gap:6px;width:100%}
+.mq .acts .btn{min-height:36px;padding:5px 8px;font-size:13px;white-space:nowrap}
+.mq .go{width:100%;min-height:40px;font-size:14.5px;white-space:nowrap}
+.mq.guest{background:linear-gradient(180deg,rgba(226,87,15,.16),rgba(226,87,15,.06));border:1.5px dashed rgba(255,140,70,.7);color:#fff}
+.mq.guest b{color:#fff}.mq.guest small{color:#d8cbc1}
+.mq.guest .ico{width:118px;height:118px;border-radius:14px;display:grid;place-items:center;background:rgba(255,240,228,.06);border:1px solid rgba(255,190,150,.3);color:#ff8a45}
+.mq.guest .btn{background:transparent;color:#fff;border-color:rgba(255,190,150,.5);box-shadow:none}
+.mq.guest .btn:hover{background:rgba(255,240,228,.1)}
+.acc-strip .btn.primary{box-shadow:0 1px 0 rgba(120,40,0,.25),0 10px 24px -10px rgba(255,110,40,.9),inset 0 1px 0 rgba(255,255,255,.25)}
+
+/* Programa: filas con más relieve */
+.day-card{padding:0;overflow:hidden}
+.day-card .day-head{padding:20px 24px 16px;margin:0;border-bottom:0;background:linear-gradient(180deg,var(--surface2),var(--surface));box-shadow:inset 0 -2px 0 var(--ink)}
+.day-card .slots{padding:4px 24px 16px}
+.slot{border-radius:12px;padding:14px 12px;margin:0 -12px;border-top:0;position:relative;transition:background .15s var(--ease)}
+.slot:not(.brk)+.slot:not(.brk)::before{content:"";position:absolute;left:12px;right:12px;top:0;height:1px;background:var(--line)}
+.slot:not(.brk):hover{background:color-mix(in srgb,var(--accent-soft) 55%,var(--surface))}
+.slot:not(.brk):hover::before,.slot:not(.brk):hover+.slot::before{opacity:0}
+.slot .t>span:first-child{display:inline-block;align-self:flex-start;padding:3px 10px;border-radius:8px;background:var(--ink);color:var(--bg);font-size:16px}
+.slot.moved .t>span:first-child{background:var(--accent);color:#fff}
+.slot .av{background:linear-gradient(160deg,var(--surface),var(--surface2));box-shadow:0 0 0 3px var(--surface),0 0 0 4px var(--line2)}
+.sigpill{display:inline-flex;flex-direction:column;gap:5px;min-width:150px;padding:8px 12px;border-radius:10px;background:var(--surface2);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted)}
+.sigpill .sg{display:flex;align-items:center;gap:6px}
+.sigpill .meter{height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.sigpill .meter i{display:block;height:100%;background:var(--ok);border-radius:3px}
+.sigpill.done{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
+.slot.brk{background:repeating-linear-gradient(135deg,var(--surface2) 0 10px,var(--surface) 10px 20px);border:1px dashed var(--line2);margin:8px -4px}
+
+/* Resultados: tabla con encabezado grafito y columna de promedio destacada */
+.res-table{border:1px solid #000;box-shadow:0 18px 40px -28px rgba(27,22,19,.7)}
+.res-table thead th{background:linear-gradient(180deg,#2a211c,#16110e);color:#e9ddd3;border-bottom:3px solid var(--accent);font-size:12px;letter-spacing:.08em}
+.res-table thead th:first-child{background:linear-gradient(180deg,#2a211c,#16110e)}
+.res-table thead th.th-avg{background:linear-gradient(180deg,#c94a0a,#9a3606);color:#fff}
+.res-table tbody tr:nth-child(even) td,.res-table tbody tr:nth-child(even) th{background:color-mix(in srgb,var(--surface2) 70%,var(--surface))}
+.res-table tbody tr:hover td,.res-table tbody tr:hover th{background:color-mix(in srgb,var(--accent-soft) 60%,var(--surface))}
+.res-table td.avg{background:color-mix(in srgb,var(--accent-soft) 45%,var(--surface))!important;border-left:1px solid color-mix(in srgb,var(--accent) 25%,var(--line))}
+.res-table .draft{display:inline-block;white-space:nowrap;padding:4px 8px;border-radius:8px;background:var(--warn-soft);font-style:normal}
+.res-table .empty{display:inline-block;width:18px;height:2px;border-radius:2px;background:var(--line2);vertical-align:middle}
+.res-table .score{display:inline-flex;align-items:center;justify-content:center;min-width:46px;padding:4px 8px;border-radius:8px;background:var(--ok-soft);color:var(--ok);font-weight:700}
+.res-table .pend{display:inline-block;padding:4px 10px;border-radius:8px;font-family:var(--f-body);font-size:13px;font-weight:600;letter-spacing:0;color:var(--muted);background:var(--surface);border:1px dashed var(--line2)}
+.repbtn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 10px;border-radius:8px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line2));background:var(--surface);color:var(--accent-deep);font-weight:600;font-size:13px;transition:background .15s var(--ease),border-color .15s var(--ease)}
+.repbtn:hover{background:var(--accent-soft);border-color:var(--accent)}
+@media (max-width:440px){.mini-q{grid-template-columns:1fr 1fr;gap:10px}.mq{padding:14px 10px 10px}.mq .qr{width:104px;height:104px}.mq .acts .btn:not(.icon){font-size:0;gap:0}.mq .acts .btn:not(.icon) .ic{width:16px;height:16px}.mq.guest .ico{width:104px;height:104px}}
+
 [hidden]{display:none!important}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:10px;font-size:15px;font-weight:500;z-index:40;max-width:90vw;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 @media (max-width:720px){body.on-eval #toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
@@ -779,7 +844,7 @@ function viewPrograma(){
     return '<div class="slot'+(movedS(s)?' moved':'')+'"><div class="t"><span>'+esc(tx(s))+'</span><small>'+ic('clock',13)+'Retroalimentación '+esc(fx(s))+'</small></div>'+
       '<span class="av">'+esc(ini(s.n))+'</span>'+
       '<div class="who"><b>'+esc(s.n)+'</b><span>'+ic('building',15)+'<span>'+esc(s.e)+'</span></span></div>'+
-      '<div><span class="pill '+(n===EVALS.length?'ok':'')+'">'+ic('pen',14)+n+' de '+EVALS.length+' firmas'+dots(n)+'</span>'+(movedS(s)?' <span class="pill acc">Horario modificado</span>':'')+'</div></div>';
+      '<div><span class="sigpill'+(n>=CORE?' done':'')+'"><span class="sg">'+ic(n>=CORE?'check':'pen',14)+n+' de '+EVALS.length+' firmas</span><span class="meter" aria-hidden="true"><i style="width:'+Math.round(n/EVALS.length*100)+'%"></i></span></span>'+(movedS(s)?' <span class="pill acc">Horario modificado</span>':'')+'</div></div>';
   }
   var days=[];ST.forEach(function(s){var g=days.filter(function(x){return x.d===s.d;})[0];if(!g){g={d:s.d,list:[]};days.push(g);}g.list.push(s);});
   var cards=days.map(function(g){
@@ -790,7 +855,7 @@ function viewPrograma(){
     });
     var ce=addMin(last.h,20);
     rows+=brk(ce+' – '+addMin(ce,10),'flag','Retroalimentación final y cierre del evento');
-    return '<section class="card"><div class="day-head"><div class="sec-h"><span class="badge">'+ic('calendar',20)+'</span><h2>'+esc(cap(dayLabel(g.d)))+'</h2></div><span class="muted small">Inicio '+first.h+' h · '+esc(S.sched.venue)+'</span></div>'+rows+'</section>';
+    return '<section class="card day-card"><div class="day-head"><div class="sec-h"><span class="badge">'+ic('calendar',20)+'</span><h2>'+esc(cap(dayLabel(g.d)))+'</h2></div><span class="muted small">Inicio '+first.h+' h · '+esc(S.sched.venue)+'</span></div><div class="slots">'+rows+'</div></section>';
   }).join('');
   var editRow=S.canEdit&&!S.edit?'<div class="secbar">'+coordBtn('practicantes','Editar practicantes')+coordBtn('jurado','Editar jurado')+'<button class="btn" data-act="editsched">'+ic('pen',18)+'Editar días, horarios y lugar</button></div>':'';
   return '<div class="stack">'+
@@ -879,23 +944,23 @@ function viewEvaluar(){
 
 function viewResultados(){
   var bw=byWho(), all=0, nrows=0, sum=0;
-  var head='<tr><th scope="col">Practicante y empresa</th>'+EVALS.map(function(e){return '<th scope="col">'+esc(e.guest?'Invitado (empresa)':e.s)+'</th>';}).join('')+'<th>Promedio</th></tr>';
+  var head='<tr><th scope="col">Practicante y empresa</th>'+EVALS.map(function(e){return '<th scope="col">'+esc(e.guest?'Invitado (empresa)':e.s)+'</th>';}).join('')+'<th scope="col" class="th-avg">Promedio</th></tr>';
   var body=ST.map(function(s){
     var vals=[], cells=EVALS.map(function(e){
       var ev=bw[e.k]&&bw[e.k].evals&&bw[e.k].evals[s.id];
-      if(ev&&ev.signedAt){var v=score(ev);vals.push(v);all++;return '<td class="num"><b>'+fmt(v)+'</b></td>';}
+      if(ev&&ev.signedAt){var v=score(ev);vals.push(v);all++;return '<td class="num"><span class="score">'+fmt(v)+'</span></td>';}
       if(started(ev))return '<td><span class="draft">en borrador</span></td>';
-      return '<td class="muted">–</td>';
+      return '<td><span class="empty" role="img" aria-label="Sin evaluar"></span></td>';
     }).join('');
     var avg=vals.length?vals.reduce(function(a,b){return a+b;},0)/vals.length:null;
     if(avg!=null){sum+=avg;nrows++;}
-    var cell=avg==null?'<td class="avg muted">–</td>':'<td class="avg num">'+fmt(avg)+'<div class="bar"><i style="width:'+Math.min(100,avg)+'%"></i></div><div class="small muted" style="font-family:var(--f-body);font-weight:500;margin-top:4px">'+band(avg)+' · '+vals.length+' de '+EVALS.length+(vals.length<EVALS.length?' (parcial)':'')+'</div></td>';
-    return '<tr><th scope="row" style="font-weight:400;font-size:15px;color:var(--ink)"><div class="cellp"><span class="av sm">'+esc(ini(s.n))+'</span><div><b>'+esc(s.n)+'</b><span class="muted small">'+esc(s.e)+'</span><button class="linkbtn" data-act="toreport" data-sid="'+s.id+'">Ver reporte '+ic('arrow',14)+'</button></div></div></th>'+cells+cell+'</tr>';
+    var cell=avg==null?'<td class="avg"><span class="pend">Sin firmas aún</span></td>':'<td class="avg num">'+fmt(avg)+'<div class="bar"><i style="width:'+Math.min(100,avg)+'%"></i></div><div class="small muted" style="font-family:var(--f-body);font-weight:500;margin-top:4px">'+band(avg)+' · '+vals.length+' de '+EVALS.length+(vals.length<EVALS.length?' (parcial)':'')+'</div></td>';
+    return '<tr><th scope="row" style="font-weight:400;font-size:15px;color:var(--ink)"><div class="cellp"><span class="av sm">'+esc(ini(s.n))+'</span><div><b>'+esc(s.n)+'</b><span class="muted small">'+esc(s.e)+'</span><button class="repbtn" data-act="toreport" data-sid="'+s.id+'" aria-label="Ver reporte de '+esc(s.n)+'">'+ic('file',14)+'Ver reporte</button></div></div></th>'+cells+cell+'</tr>';
   }).join('');
   var note=S.mode==='local'?'<div class="notice">'+ic('info',18)+'<span>'+(window.claude?'Estás viendo solo lo guardado en este navegador. Con tu sesión de Claude se muestran las firmas de todos los evaluadores.':'Estás viendo lo guardado en este navegador.')+'</span></div>':'';
   return '<div class="stack">'+note+'<div class="stats">'+stat('pen','Evaluaciones firmadas',all+' de '+(ST.length*EVALS.length))+stat('award','Promedio del grupo (con firmas)',nrows?fmt(sum/nrows):'–')+'</div>'+
-   '<div class="secbar">'+coordBtn('firmas','Gestionar firmas')+'<button class="btn" data-act="csv"'+(S.dwn?'':' disabled')+'>'+ic('download',18)+'Exportar a Excel (.csv)</button></div>'+
-   '<div class="tablewrap"><table><caption class="sr">Calificaciones firmadas por practicante y evaluador</caption><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'+
+   '<div class="secbar">'+coordBtn('firmas','Gestionar firmas')+'<button class="btn dark" data-act="csv"'+(S.dwn?'':' disabled')+'>'+ic('download',18)+'Exportar a Excel (.csv)</button></div>'+
+   '<div class="tablewrap res-table"><table><caption class="sr">Calificaciones firmadas por practicante y evaluador</caption><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'+
    '<p class="muted small" style="margin:0">Solo cuentan las evaluaciones firmadas. El promedio es la media de las calificaciones de los evaluadores que ya firmaron, sobre 100 puntos.</p></div>';
 }
 
@@ -1293,9 +1358,9 @@ function guestAccess(){
 }
 function accessStrip(){
   var core=EVALS.filter(function(e){return !e.guest;});
-  var cards=core.map(function(e){var url=evLink(e);return '<div class="mq"><div class="qr">'+qrSVG(url)+'</div><div><b>'+esc(e.n)+'</b><small>'+esc(e.cargo)+'</small></div><div class="row"><button class="btn sm" data-act="copylink" data-k="'+e.k+'" aria-label="Copiar liga de '+esc(e.n)+'" style="white-space:nowrap">'+ic('copy',14)+'Copiar</button><button class="btn sm icon" data-act="dlqr" data-k="'+e.k+'" aria-label="Descargar QR de '+esc(e.n)+'"'+(S.dwn?'':' disabled')+'>'+ic('download',14)+'</button></div><button class="btn primary sm" style="width:100%" data-act="actas" data-k="'+e.k+'" data-sid="">'+ic('arrow',14)+'Entrar como '+esc(e.n.split(' ')[0])+'</button></div>';}).join('');
-  cards+='<div class="mq"><div class="qr" style="display:grid;place-items:center;color:var(--accent)">'+ic('building',44)+'</div><div><b>Invitados de empresa</b><small>Un QR por practicante para su empresario</small></div><div class="row"><button class="btn sm" data-act="gotab" data-t="accesos">'+ic('qr',14)+'Ver los 10 QR</button></div></div>';
-  return '<section class="acc-strip" aria-labelledby="accT"><div class="ah"><div><span class="eyebrow-s">Accesos personales</span><h2 id="accT">Cada evaluador tiene su liga y su código QR.</h2><p>Escanea o abre la liga: entra directo a su evaluación con su nombre seleccionado.</p></div><button class="btn primary" data-act="dlqrall"'+(S.dwn?'':' disabled')+'>'+ic('zip',18)+'Descargar todos los QR</button></div><div class="mini-q">'+cards+'</div></section>';
+  var cards=core.map(function(e){var url=evLink(e);return '<div class="mq"><div class="qr">'+qrSVG(url)+'</div><div class="who-t"><b>'+esc(e.n)+'</b><small>'+esc(e.cargo)+'</small></div><div class="acts"><button class="btn sm" data-act="copylink" data-k="'+e.k+'" aria-label="Copiar liga de '+esc(e.n)+'">'+ic('copy',14)+'Copiar liga</button><button class="btn sm icon" data-act="dlqr" data-k="'+e.k+'" aria-label="Descargar QR de '+esc(e.n)+'" title="Descargar QR"'+(S.dwn?'':' disabled')+'>'+ic('download',14)+'</button></div><button class="btn primary go" data-act="actas" data-k="'+e.k+'" data-sid="" aria-label="Evaluar como '+esc(e.n)+'">Evaluar'+ic('arrow',16)+'</button></div>';}).join('');
+  cards+='<div class="mq guest"><div class="ico">'+ic('building',46)+'</div><div class="who-t"><b>Invitados de empresa</b><small>Un QR por practicante para su empresario</small></div><button class="btn go" data-act="gotab" data-t="accesos">'+ic('qr',16)+'Ver los '+ST.length+' QR</button></div>';
+  return '<section class="acc-strip" aria-labelledby="accT"><div class="ah"><div><span class="eyebrow-s">Accesos personales</span><h2 id="accT">Cada evaluador tiene su liga y su código QR.</h2><p>Cada código abre la evaluación con el nombre de esa persona ya seleccionado. Imprímelos o compártelos por correo.</p></div><button class="btn primary" data-act="dlqrall"'+(S.dwn?'':' disabled')+'>'+ic('zip',18)+'Descargar todos los QR</button></div><div class="mini-q">'+cards+'</div></section>';
 }
 function myAccess(w){
   var e=evByK(w);if(!e||e.guest)return '';
