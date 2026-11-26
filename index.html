@@ -564,6 +564,8 @@ td.avg{font-family:var(--f-display);font-weight:800;font-size:25px;letter-spacin
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:10px;font-size:15px;font-weight:500;z-index:40;max-width:90vw;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 @media (max-width:720px){body.on-eval #toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.sendbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.sendbar .grow{flex:1;min-width:200px;display:grid;gap:2px}.sendbar b{display:flex;gap:6px;align-items:center}
+.sendqr{width:min(320px,100%);aspect-ratio:1;background:#fff;padding:12px;border-radius:14px;border:1px solid #e7dfd8;margin:0 auto}.sendqr svg{width:100%;height:100%;display:block}
 @media print{body *{visibility:hidden}#genPaper,#genPaper *{visibility:visible}#genPaper{position:absolute;left:0;top:0;width:100%;box-shadow:none;border:0}}
 </style>
 </head>
@@ -676,7 +678,7 @@ var BASE_URL=ON_WEB?(location.origin+location.pathname):'https://claude.ai/artif
 /* Descargas fuera de Claude: enlace de descarga normal del navegador */
 var WEB_DWN={save:async function(o){var blob=o.data instanceof Blob?o.data:new Blob([o.data]);var u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=o.filename;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},1500);return {status:'saved'};}};
 /* Coordinación en GitHub: se activa abriendo la página con #coordinacion en este navegador */
-try{if(location.hash==='#coordinacion'){localStorage.setItem('pp-coord','1');}}catch(e){}
+
 function evLink(e,sid){return BASE_URL+'#eval-'+e.k+(sid?'-'+sid:'');}
 var LS='pp-eval-v1';
 var CORE=EVALS.filter(function(e){return !e.guest;}).length;
@@ -775,10 +777,10 @@ function updateHero(){
   renderHeroNav();
   var hs=document.getElementById('heroSide');
   if(hs){var tot=ST.length*CORE,sg=0,fin=0,bw=byWho();
-    ST.forEach(function(st){var nc=0;EVALS.forEach(function(e){if(e.guest)return;var ev=bw[e.k]&&bw[e.k].evals&&bw[e.k].evals[st.id];if(ev&&ev.signedAt)nc++;});sg+=nc;if(nc>=CORE)fin++;});
+    ST.forEach(function(st){var nc=0;EVALS.forEach(function(e){if(e.guest)return;var ev=bw[e.k]&&bw[e.k].evals&&bw[e.k].evals[st.id];if(ev&&ev.signedAt)nc++;});sg+=nc;});ST.forEach(function(st){if(signedFor(st.id).length)fin++;});
     var gs=0,gd=bw.invitado;if(gd&&gd.evals)ST.forEach(function(st){if(gd.evals[st.id]&&gd.evals[st.id].signedAt)gs++;});
     hs.innerHTML='<span class="lbl">Avance del jurado</span><div class="val num">'+sg+'<small> / '+tot+' firmas</small></div><div class="hbar"><i style="width:'+(tot?Math.round(sg/tot*100):0)+'%"></i></div>'+
-      '<div class="mini"><div><b class="num">'+fin+' / '+ST.length+'</b><span>reportes finales</span></div><div><b class="num">'+gs+'</b><span>invitados de empresa</span></div></div>';}
+      '<div class="mini"><div><b class="num">'+fin+' / '+ST.length+'</b><span>alumnos con promedio</span></div><div><b class="num">'+gs+'</b><span>invitados de empresa</span></div></div>';}
 }
 function daysSummary(){
   var days={},order=[];ST.forEach(function(s){if(!days[s.d]){days[s.d]=[];order.push(s.d);}days[s.d].push(s);});
@@ -883,7 +885,7 @@ function chooserView(){
 
 function viewEvaluar(){
   var w=who();
-  var banner=(S.mode==='local')?'<div class="notice">'+ic('info',18)+'<span>'+(window.claude?'Modo local: tus evaluaciones se guardan solo en este navegador y no llegan al promedio compartido. Para firmar en el registro común, abre esta página con tu sesión de Claude.':'Versión web: tus evaluaciones y firmas se guardan en este navegador. Para reunir todo el jurado, usa el respaldo (.json) o la versión en Claude.')+'</span></div>':'';
+  var banner=(S.mode==='local')?'<div class="notice">'+ic('info',18)+'<span>'+(window.claude?'Modo local: tus evaluaciones se guardan solo en este navegador y no llegan al promedio compartido. Para firmar en el registro común, abre esta página con tu sesión de Claude.':'Tus evaluaciones se guardan en este celular o computadora. Al terminar, pulsa “Enviar a Tania” para que lleguen al reporte general.')+'</span></div>':'';
   if(!w)return '<div class="stack">'+banner+chooserView()+'</div>';
   var me=evByK(w), d=myData()||{evals:{}}, s=stById(S.sid);
   var ev=(d.evals&&d.evals[s.id])||{lv:{},note:'',signedAt:null};
@@ -933,7 +935,7 @@ function viewEvaluar(){
     (signed?'<button class="btn dark" data-act="pick" data-sid="'+nxt.id+'">Siguiente '+ic('arrow',18)+'</button>':'<button class="btn primary" data-act="sign">'+ic('pen',18)+'Firmar</button>')+'</div>';
   var pb=(S.personal&&S.personal===w)?'<div class="personal">'+ic('link',18)+'<span>Acceso personal de <b>'+esc(me.n)+'</b>. Tus calificaciones y firmas se guardan con tu nombre.</span></div>':'';
   return '<div class="stack">'+banner+pb+
-   whoBar(w,isG?((ev.gn||'').trim()||me.n):me.n)+(S.showMy?myAccess(w):'')+
+   whoBar(w,isG?((ev.gn||'').trim()||me.n):me.n)+(S.showMy?myAccess(w):'')+(ON_WEB&&!window.claude?viewSend():'')+
    '<div class="evgrid"><aside class="card stlist" aria-label="Practicantes">'+list+'</aside><div class="stack" style="min-width:0">'+
    '<div class="stsel">'+sel+'</div>'+evnav+
    '<div class="sticky-score"><div style="min-width:0"><h2>'+esc(s.n)+'</h2><span class="muted small">'+esc(s.e)+' · '+sdate(s.d)+' · '+s.h+' h</span></div><div class="big num">'+fmt(tot)+'<small> / 100</small><span class="band">'+(ok?band(tot):'En curso')+'</span></div></div>'+
@@ -1136,8 +1138,7 @@ function avgFor(sid){var l=signedFor(sid);if(!l.length)return null;return l.redu
 function reportDoc(s){
   var L=signedFor(s.id),n=L.length,avg=avgFor(s.id),p=letterHead();
   p.push({t:'Reporte de evaluación de Prácticas Profesionales',b:true,sz:15,after:60});
-  var nc=L.filter(function(x){return !x.e.guest;}).length,fin=nc>=CORE;
-  p.push({t:fin?'Reporte final · '+n+' evaluaciones firmadas':'Reporte parcial · '+nc+' de '+CORE+' evaluaciones del jurado firmadas',col:fin?'1A7F4B':'8F5B00',b:true,sz:10,after:240});
+  p.push({t:n?'Reporte · promedio de '+n+(n===1?' evaluación firmada':' evaluaciones firmadas')+' (cuentan todos los que evaluaron)':'Reporte pendiente · sin evaluaciones firmadas',col:n?'1A7F4B':'8F5B00',b:true,sz:10,after:240});
   p.push({t:[{t:'Practicante: ',b:true},{t:s.n}],after:40});
   p.push({t:[{t:'Empresa: ',b:true},{t:s.e}],after:40});
   p.push({t:[{t:'Exposición: ',b:true},{t:cap(dayLabel(s.d))+', '+s.h+' h · '+S.sched.venue}],after:240});
@@ -1239,8 +1240,8 @@ function coordParts(){
   var top='<div class="co-top card"><div><span class="eyebrow-s">Coordinación</span><h2>Panel de control</h2><p class="muted" style="margin:6px 0 0">'+esc((evByK('tania')||{}).n||'Coordinación')+' · '+esc((evByK('tania')||{}).cargo||'')+'. Todo lo que edites aquí se aplica de inmediato para todos.</p></div><div class="co-nav">'+nav+'</div></div>';
   return {top:top,evento:evento,practicantes:practicantes,jurado:jurado,rubrica:rubrica,firmas:firmas,datos:datos};
 }
-function viewCoord(){var P=coordParts();if(!P)return '<div class="card"><h2 style="font-size:24px">Sección reservada a la coordinación</h2><p class="muted">Solo la coordinadora del programa puede editar esta sección.</p></div>';
-  return '<div class="stack">'+P.top+'<div class="secbar"><button class="btn dark" data-act="gotab" data-t="seguimiento">'+ic('chart',18)+'Ver seguimiento de evaluadores</button><button class="btn" data-act="gotab" data-t="accesos">'+ic('qr',18)+'Ligas y códigos QR</button></div>'+P.evento+P.practicantes+P.jurado+P.rubrica+P.firmas+P.datos+'</div>';}
+function viewCoord(){var P=coordParts();if(!P&&ON_WEB&&!window.claude)return pinView();if(!P)return '<div class="card"><h2 style="font-size:24px">Sección reservada a la coordinación</h2><p class="muted">Solo la coordinadora del programa puede editar esta sección.</p></div>';
+  return '<div class="stack">'+P.top+'<div class="secbar"><button class="btn dark" data-act="gotab" data-t="seguimiento">'+ic('chart',18)+'Ver seguimiento de evaluadores</button><button class="btn" data-act="gotab" data-t="accesos">'+ic('qr',18)+'Ligas y códigos QR</button><button class="btn" data-act="gotab" data-t="general">'+ic('award',18)+'Reporte general</button>'+(ON_WEB&&!window.claude?'<button class="btn ghost" data-act="coordout">Salir de coordinación</button>':'')+'</div>'+P.evento+P.practicantes+P.jurado+P.rubrica+P.firmas+P.datos+'</div>';}
 var EDITMAP={programa:['evento','practicantes'],evaluar:['jurado'],resultados:['firmas'],reportes:['firmas'],rubrica:['rubrica'],cartas:['jurado','practicantes'],accesos:['jurado']};
 function editDock(){
   if(!S.editMode||!isCoord()||!EDITMAP[S.tab])return '';
@@ -1409,6 +1410,7 @@ function routeHash(){
   var h=(location.hash||'').slice(1);
   if(h===S.lastHash)return false;S.lastHash=h;
   if(h==='coordinacion'){S.tab='coord';return true;}
+  if(h.indexOf('imp=')===0){S.importData=h.slice(4);S.tab=isCoord()?'general':'coord';return true;}
   var mm=/^eval-([a-z]+)(?:-([a-z]+))?$/.exec(h);
   if(mm&&evByK(mm[1])){S.preWho=mm[1];S.tab='evaluar';if(mm[2]&&stById(mm[2])){S.sid=mm[2];}return true;}
   if(TABS.some(function(t){return t[0]===h;})){S.tab=h;return true;}
@@ -1439,13 +1441,61 @@ function cloudLoad(){
     CLOUD.loading=false;if(!j||!j.ok){CLOUD.err=(j&&j.error)||'No se pudo leer el registro';CLOUD.recs=null;}else{CLOUD.err=null;CLOUD.recs=j.data||[];CLOUD.at=new Date();}softRender();
   }).catch(function(){CLOUD.loading=false;CLOUD.err='No se pudo conectar con el registro general. Revisa tu internet.';softRender();});
 }
+/* ---------- Entrega sin servidor: cada evaluador envía sus firmas a la coordinación con un enlace o QR ---------- */
+var IMPORTS=[];try{IMPORTS=JSON.parse(localStorage.getItem('pp-imports')||'[]')||[];}catch(e){IMPORTS=[];}
+function saveImports(){try{localStorage.setItem('pp-imports',JSON.stringify(IMPORTS));}catch(e){}}
+function b64e(s){return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function b64d(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return decodeURIComponent(escape(atob(s)));}
+function packMine(){
+  var w=who(),d=myData();if(!w||!d||!d.evals)return null;
+  var r=[],u=[];
+  Object.keys(d.evals).forEach(function(sid){var ev=d.evals[sid];
+    if(ev&&ev.signedAt){r.push({s:sid,l:CRIT.map(function(c){var i=ev.lv&&ev.lv[c.id];return i==null?'-':String(i);}).join(''),t:ev.signedAt,f:ev.folio||'',n:(ev.note||'').slice(0,240),gn:ev.gn||'',gc:ev.gc||'',ge:ev.ge||''});}
+    else u.push(sid);});
+  if(!r.length)return null;
+  return {w:w,dv:devId(),r:r,u:u};
+}
+function sendLink(){var p=packMine();return p?BASE_URL+'#imp='+b64e(JSON.stringify(p)):null;}
+function importPayload(str){
+  var p;try{p=JSON.parse(b64d(str));}catch(e){toast('El enlace de entrega no es válido.');return;}
+  if(!p||!p.w||!evByK(p.w)||!Array.isArray(p.r)){toast('El enlace de entrega no es válido.');return;}
+  var g=isGuest(p.w),n=0;
+  function idOf(sid){return p.w+'|'+sid+(g?'|'+p.dv:'');}
+  (p.u||[]).forEach(function(sid){IMPORTS=IMPORTS.filter(function(x){return x.id!==idOf(sid);});});
+  p.r.forEach(function(x){if(!stById(x.s))return;var lv={};CRIT.forEach(function(c,i){var ch=(x.l||'')[i];if(ch&&ch!=='-')lv[c.id]=+ch;});
+    var rec={id:idOf(x.s),w:p.w,sid:x.s,lv:lv,note:x.n||'',gn:x.gn||'',gc:x.gc||'',ge:x.ge||'',signedAt:x.t,folio:x.f||''};
+    IMPORTS=IMPORTS.filter(function(y){return y.id!==rec.id;});IMPORTS.push(rec);n++;});
+  saveImports();
+  var e=evByK(p.w),nm=g?((p.r[0]&&p.r[0].gn)||'Invitado'):e.n;
+  toast('Recibidas '+n+' evaluaciones de '+nm);
+}
+function extRecs(){
+  var all=(CLOUD.recs||[]).concat(IMPORTS),m={};
+  all.forEach(function(r){if(!r||!r.signedAt)return;var c=m[r.id];if(!c||String(r.signedAt)>String(c.signedAt))m[r.id]=r;});
+  return Object.keys(m).map(function(k){return m[k];});
+}
+function viewSend(){
+  var w=who();if(!w)return '';var p=packMine(),link=p?sendLink():null;
+  if(!S.showSend)return '<section class="card sendbar"><div class="grow"><b>'+ic('arrow',18)+' Entrega tus evaluaciones a la coordinación</b><span class="muted small">'+(p?p.r.length+' evaluaciones firmadas listas para enviar.':'Firma al menos una evaluación para poder enviarla.')+'</span></div><button class="btn primary" data-act="showsend"'+(p?'':' disabled')+'>'+ic('qr',18)+'Enviar a Tania</button></section>';
+  var big=link&&link.length<2200;
+  var wa='https://wa.me/?text='+encodeURIComponent('Evaluaciones de Prácticas Profesionales: '+link);
+  var mail='mailto:coordadmin.uac@anahuac.mx?subject='+encodeURIComponent('Evaluaciones Prácticas Profesionales')+'&body='+encodeURIComponent(link);
+  return '<section class="card stack sendcard"><div class="sec-h"><span class="badge">'+ic('arrow',20)+'</span><div><h2 style="font-size:22px">Enviar mis evaluaciones a Tania</h2><p class="muted" style="margin:4px 0 0">Muéstrale este código a la Mtra. Tania para que lo escanee con la cámara de su celular, o mándale el enlace. Lleva tus '+p.r.length+' evaluaciones firmadas. Si después corriges alguna, vuelve a enviarlo.</p></div></div>'+
+    (big?'<div class="sendqr">'+qrSVG(link)+'</div>':'<div class="notice">'+ic('info',18)+'<span>Tus comentarios son largos para un código QR; envía el enlace por WhatsApp o correo.</span></div>')+
+    '<div class="row"><button class="btn primary" data-act="copysend">'+ic('copy',16)+'Copiar enlace</button><a class="btn" href="'+esc(wa)+'" target="_blank" rel="noopener">'+ic('chat',16)+'WhatsApp</a><a class="btn" href="'+esc(mail)+'">'+ic('mail',16)+'Correo</a><button class="btn ghost" data-act="showsend">Cerrar</button></div></section>';
+}
+/* Clave de coordinación para la versión web */
+var COORD_HASH='a2219e4128629e27dcf5a6f1ca242e9e22937879c56d24986815c3efef8808f0';
+async function sha256(t){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');}
+function pinView(){return '<section class="card stack" style="max-width:520px"><div class="sec-h"><span class="badge">'+ic('shield',20)+'</span><div><h2 style="font-size:24px">Acceso de coordinación</h2><p class="muted" style="margin:4px 0 0">Solo la coordinadora administra la plataforma y ve el reporte general. Escribe la clave de coordinación.</p></div></div><label class="f">Clave<input id="pinIn" type="password" autocomplete="off"></label><button class="btn primary" data-act="pinok">'+ic('shield',18)+'Entrar</button></section>';}
+
 function cloudEv(r){return {lv:r.lv||{},note:r.note||'',signedAt:r.signedAt,folio:r.folio,total:r.total,gn:r.gn||'',gc:r.gc||'',ge:r.ge||''};}
 /* Con el registro general cargado (solo coordinación), los promedios y reportes usan las firmas de todos */
 var _signedForLocal=signedFor;
 signedFor=function(sid){
-  var loc=_signedForLocal(sid);if(!CLOUD.recs)return loc;
+  var loc=_signedForLocal(sid),RR=extRecs();if(!RR.length)return loc;
   var out=[],seen={};
-  CLOUD.recs.forEach(function(r){if(r.sid!==sid||!r.signedAt)return;var e=evByK(r.w);if(!e)return;var key=r.w+'|'+(e.guest?(r.gn||'').trim().toLowerCase():'');if(seen[key])return;seen[key]=1;out.push({e:e,ev:cloudEv(r)});});
+  RR.forEach(function(r){if(r.sid!==sid||!r.signedAt)return;var e=evByK(r.w);if(!e)return;var key=r.w+'|'+(e.guest?(r.gn||'').trim().toLowerCase():'');if(seen[key])return;seen[key]=1;out.push({e:e,ev:cloudEv(r)});});
   loc.forEach(function(x){var key=x.e.k+'|'+(x.e.guest?(x.ev.gn||'').trim().toLowerCase():'');if(!seen[key]){seen[key]=1;out.push(x);}});
   var ord={};EVALS.forEach(function(e,i){ord[e.k]=i;});out.sort(function(a,b){return ord[a.e.k]-ord[b.e.k];});
   return out;
@@ -1453,9 +1503,9 @@ signedFor=function(sid){
 signedCount=function(sid){return signedFor(sid).length;};
 var _byWhoLocal=byWho;
 byWho=function(){
-  var m=_byWhoLocal();if(!CLOUD.recs)return m;
+  var m=_byWhoLocal(),RR=extRecs();if(!RR.length)return m;
   var o={};Object.keys(m).forEach(function(k){o[k]={who:k,evals:Object.assign({},(m[k]&&m[k].evals)||{})};});
-  CLOUD.recs.forEach(function(r){if(!r.signedAt||!evByK(r.w))return;o[r.w]=o[r.w]||{who:r.w,evals:{}};var c=o[r.w].evals[r.sid];if(!c||!c.signedAt)o[r.w].evals[r.sid]=cloudEv(r);});
+  RR.forEach(function(r){if(!r.signedAt||!evByK(r.w))return;o[r.w]=o[r.w]||{who:r.w,evals:{}};var c=o[r.w].evals[r.sid];if(!c||!c.signedAt)o[r.w].evals[r.sid]=cloudEv(r);});
   return o;
 };
 function generalDoc(){
@@ -1477,7 +1527,8 @@ function generalDoc(){
 }
 function viewGeneral(){
   if(!isCoord())return '<div class="card"><h2 style="font-size:24px">Sección reservada a la coordinación</h2></div>';
-  var setup='<section class="card stack"><div class="sec-title" style="margin:0"><span class="eyebrow-s">Configuración pendiente</span><h2>Conecta el registro general.</h2><p>Para reunir en un solo lugar las evaluaciones de todos los dispositivos, la página necesita una Hoja de Google con Apps Script. Sigue los pasos del archivo <b>README.md</b> del repositorio y escribe la URL en <b>CLOUD_URL</b> dentro de <b>index.html</b>.</p></div></section>';
+  var ic2=IMPORTS.length,cfi=S.confirm==='clearimp';
+  var setup='<section class="card stack"><div class="sec-h"><span class="badge">'+ic('qr',20)+'</span><div><h3 style="font-size:19px;margin:0">Cómo llegan las evaluaciones</h3><p class="muted" style="margin:4px 0 0">Cada evaluador, al terminar, pulsa <b>Enviar a Tania</b> en la pestaña Evaluar. Escanea su código con la cámara de este celular (o abre el enlace que te mande) y sus evaluaciones aparecen aquí al instante. Funciona con 1, 2, 3 o todos los evaluadores.</p></div></div><div class="row"><span class="pill ok">'+ic('check',13)+ic2+' evaluaciones recibidas</span>'+(ic2?'<button class="btn '+(cfi?'danger':'ghost')+' sm" data-act="clearimp">'+(cfi?'Confirmar: borrar entregas':'Borrar entregas recibidas')+'</button>':'')+'</div></section>';
   var k=cloudKey();
   var keyBox='<section class="card stack"><div class="row" style="align-items:end"><label class="f" style="flex:1;min-width:220px">Clave de coordinación<input id="cloudKey" type="password" value="'+esc(k)+'" placeholder="La clave que pusiste en Apps Script" autocomplete="off"></label><button class="btn primary" data-act="cloudkey">'+ic('shield',18)+'Guardar clave</button><button class="btn" data-act="cloudload"'+(k?'':' disabled')+'>'+ic('undo',18)+(CLOUD.loading?'Actualizando…':'Actualizar ahora')+'</button></div>'+
     '<p class="muted small" style="margin:0">'+(CLOUD.err?'<b style="color:#b3261e">'+esc(CLOUD.err)+'</b>':CLOUD.at?'Última actualización: '+esc(CLOUD.at.toLocaleTimeString('es-MX'))+' · se actualiza sola cada 30 segundos.':'La clave se guarda solo en este navegador. Sin ella nadie puede ver las evaluaciones de los demás.')+'</p></section>';
@@ -1487,7 +1538,7 @@ function viewGeneral(){
     var chips=L.map(function(x){return '<span class="pill ok" title="'+esc(fullName(x))+' · '+esc(fdate(x.ev.signedAt))+'">'+esc(shortName(x))+' · '+fmt(score(x.ev))+'</span>';}).join(' ')||'<span class="pend">Sin firmas aún</span>';
     return '<tr><th scope="row" style="font-weight:400"><b>'+esc(s.n)+'</b><br><span class="muted small">'+esc(s.e)+'</span></th><td>'+chips+'</td><td class="num" style="text-align:center">'+L.length+'</td><td class="avg num">'+(a==null?'–':'<b>'+fmt(a)+'</b><br><span class="muted small">'+band(a)+'</span>')+'</td></tr>';}).join('');
   return '<div class="stack"><div class="sec-title"><span class="eyebrow-s">Solo coordinación</span><h2>Reporte general: todas las evaluaciones y el promedio por alumno.</h2><p>Reúne las evaluaciones firmadas de todo el jurado y los invitados, desde cualquier celular o computadora. Cada promedio se calcula con quienes ya firmaron; no hace falta que evalúen todos.</p></div>'+
-   (CLOUD.on?keyBox:setup)+
+   setup+(CLOUD.on?keyBox:'')+
    '<div class="stats">'+stat('users','Alumnos con firmas',withS+' de '+ST.length)+stat('pen','Evaluaciones firmadas',String(tot))+stat('award','Promedio del grupo',withS?fmt(sum/withS):'–')+'</div>'+
    '<div class="row"><button class="btn primary" data-act="dlgeneral"'+dis+'>'+ic('download',18)+'Descargar reporte general (.docx)</button><button class="btn dark" data-act="csv"'+dis+'>'+ic('download',18)+'Exportar a Excel (.csv)</button><button class="btn" data-act="printgen">'+ic('file',18)+'Imprimir</button></div>'+
    '<div class="tablewrap res-table"><table><caption class="sr">Evaluaciones firmadas y promedio por alumno</caption><thead><tr><th scope="col">Alumno</th><th scope="col">Evaluaciones firmadas</th><th scope="col">Firmas</th><th scope="col" class="th-avg">Promedio</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
@@ -1498,9 +1549,10 @@ function cloudStart(){if(!CLOUD.on||!isCoord()||!cloudKey())return;cloudLoad();c
 
 /* ---------- Render y eventos ---------- */
 function render(){
-  var COORD_ONLY=['coord','seguimiento','general'].concat(ON_WEB?['resultados','reportes']:[]);
+  if(S.importData&&isCoord()){importPayload(S.importData);S.importData=null;S.tab='general';try{history.replaceState(null,'','#general');}catch(x){}}
+  var COORD_ONLY=['seguimiento','general'].concat(ON_WEB?['resultados','reportes']:[]);
   if(COORD_ONLY.indexOf(S.tab)>=0&&!isCoord())S.tab='programa';
-  tabsEl.innerHTML=TABS.filter(function(t){return COORD_ONLY.indexOf(t[0])<0||isCoord();}).map(function(t){var on=S.tab===t[0];return '<button role="tab" id="tab-'+t[0]+'" aria-controls="app" tabindex="'+(on?0:-1)+'" data-t="'+t[0]+'" aria-selected="'+on+'">'+ic(t[2],18)+t[1]+'</button>';}).join('');
+  tabsEl.innerHTML=TABS.filter(function(t){return (COORD_ONLY.indexOf(t[0])<0&&t[0]!=='coord')||isCoord()||(t[0]==='coord'&&S.tab==='coord');}).map(function(t){var on=S.tab===t[0];return '<button role="tab" id="tab-'+t[0]+'" aria-controls="app" tabindex="'+(on?0:-1)+'" data-t="'+t[0]+'" aria-selected="'+on+'">'+ic(t[2],18)+t[1]+'</button>';}).join('');
   app.setAttribute('aria-labelledby','tab-'+S.tab);
   if(S.tab==='evaluar')autoWho();
   var v={programa:viewPrograma,evaluar:viewEvaluar,resultados:viewResultados,rubrica:viewRubrica,cartas:viewCartas,accesos:viewAccesos,reportes:viewReportes,coord:viewCoord,seguimiento:viewSeguimiento,general:viewGeneral}[S.tab];
@@ -1528,6 +1580,7 @@ app.addEventListener('keydown',function(e){
   var d={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key];if(!d)return;
   e.preventDefault();var i=(+b.dataset.i+d+LV.length)%LV.length,n=document.getElementById('lv-'+b.dataset.c+'-'+i);if(n){n.focus();n.click();}
 });
+app.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.target.id==='pinIn'){var bb=app.querySelector('[data-act="pinok"]');if(bb)bb.click();}});
 app.addEventListener('click',function(e){
   var b=e.target.closest('[data-act]');if(!b||b.disabled)return;var a=b.dataset.act;
   if(a==='pick'){S.sid=b.dataset.sid;render();window.scrollTo(0,0);}
@@ -1540,6 +1593,11 @@ app.addEventListener('click',function(e){
   else if(a==='unsign'){var r3=ensureEv(S.sid);r3.ev.signedAt=null;r3.ev.folio=null;r3.ev.total=null;commit(r3.d);cloudSend('unsign',who(),S.sid,r3.ev);render();}
   else if(a==='cloudkey'){var ki=document.getElementById('cloudKey');try{localStorage.setItem('pp-cloud-key',(ki&&ki.value||'').trim());}catch(x){}toast('Clave guardada en este navegador');cloudStart();render();}
   else if(a==='cloudload'){cloudLoad();}
+  else if(a==='showsend'){S.showSend=!S.showSend;render();}
+  else if(a==='copysend'){var sl=sendLink();if(sl)copyText(sl);}
+  else if(a==='pinok'){var pi=document.getElementById('pinIn');sha256((pi&&pi.value||'').trim()).then(function(hh){if(hh===COORD_HASH){try{localStorage.setItem('pp-coord','1');}catch(x){}toast('Bienvenida, coordinación');if(S.importData){S.tab='general';}cloudStart();render();}else{toast('Clave incorrecta');}});}
+  else if(a==='coordout'){try{localStorage.removeItem('pp-coord');}catch(x){}S.tab='programa';toast('Saliste de coordinación en este navegador');render();}
+  else if(a==='clearimp'){var ck='clearimp';if(S.confirm!==ck){S.confirm=ck;render();return;}S.confirm=null;IMPORTS=[];saveImports();toast('Entregas borradas de este navegador');render();}
   else if(a==='dlgeneral'){downloadGeneral();}
   else if(a==='printgen'){window.print();}
   else if(a==='setwho'){var c=app.querySelector('input[name=whoSel]:checked');if(!c){toast('Elige tu nombre para continuar.');return;}

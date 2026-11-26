@@ -30,21 +30,23 @@ Las ligas y los QR se generan solos con la dirección donde esté publicada la p
 
 Descárgalos desde la pestaña **Accesos** con **Descargar todos los QR (.zip)**.
 
-## Activar la coordinación en tu navegador
+## Acceso de coordinación (solo Tania)
 
-En la versión de GitHub la pestaña **Coordinación** y **Seguimiento** están ocultas. Para activarlas en tu computadora abre una vez:
+Abre `…/#coordinacion` y escribe la **clave de coordinación**. Ese navegador queda como coordinación: administra la plataforma (programa, practicantes, jurado, rúbrica, firmas) y ve Resultados, Reportes, **Reporte general** y Seguimiento. Para salir, en Coordinación pulsa **Salir de coordinación**.
 
-```
-https://TU-USUARIO.github.io/evaluacion-practicas-ade/#coordinacion
-```
+Los evaluadores no ven esas secciones: solo Programa, Evaluar, Rúbrica, Cartas y Accesos, con sus propias calificaciones.
 
-Desde ese momento ese navegador muestra el panel de control y el interruptor **Editar**. No compartas esa liga con el jurado.
+## Cómo llegan las evaluaciones al reporte general (sin configurar nada)
 
-## Reporte general con las evaluaciones de todos
+1. Cada evaluador entra con su QR, califica y firma a los alumnos que le tocó ver.
+2. En **Evaluar** pulsa **Enviar a Tania**: aparece un código QR con sus evaluaciones firmadas, más botones de WhatsApp, correo y copiar enlace.
+3. Tania escanea ese código con la cámara de su celular (o abre el enlace). La página se abre en su navegador de coordinación y las evaluaciones se suman solas al **Reporte general**.
 
-La pestaña **Reporte general** (solo coordinación) reúne en un solo lugar las evaluaciones firmadas por todo el jurado y los invitados, desde cualquier celular o computadora, y saca el **promedio por alumno** con quienes ya firmaron (no hace falta que evalúen todos). Desde ahí se descarga un solo reporte en Word, se exporta a Excel o se imprime.
+El promedio de cada alumno se calcula con quienes firmaron: funciona igual si evaluaron 1, 2, 3 o todos. Si un evaluador corrige algo, vuelve a enviar y se actualiza.
 
-Las evaluaciones se guardan en una Hoja de Google. Solo quien tenga la **clave de coordinación** puede leerlas.
+## Opcional: registro automático en Google
+
+Si prefieres que cada firma llegue sola, sin escanear códigos, conecta una Hoja de Google. Solo quien tenga la clave de Apps Script puede leer las evaluaciones.
 
 ### Configuración (una sola vez, 10 minutos)
 
@@ -55,11 +57,11 @@ Las evaluaciones se guardan en una Hoja de Google. Solo quien tenga la **clave d
 5. **Implementar → Nueva implementación →** tipo **Aplicación web**. Ejecutar como: **Yo**. Quién tiene acceso: **Cualquier persona**. Autoriza los permisos.
 6. Copia la URL que termina en `/exec`.
 7. En `index.html` busca `var CLOUD_URL='';` y pega la URL entre las comillas. Guarda el archivo en GitHub.
-8. Abre la página con `#coordinacion`, entra a **Reporte general**, escribe tu clave y pulsa **Guardar clave**.
+8. En tu navegador de coordinación entra a **Reporte general**, escribe la clave de Apps Script y pulsa **Guardar clave**.
 
 Desde ese momento cada evaluación firmada se envía sola al registro general y el reporte se actualiza cada 30 segundos.
 
-Sin la URL configurada la página sigue funcionando como antes: cada evaluador guarda sus calificaciones en su propio navegador.
+Sin la URL configurada la página funciona con el envío por QR o enlace.
 
 ## QR para invitados evaluadores
 
