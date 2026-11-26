@@ -9,6 +9,7 @@ Coordinación: Mtra. Tania Rivera Lozano.
 | Archivo | Para qué sirve |
 |---|---|
 | `index.html` | La plataforma completa en un solo archivo: programa, evaluación con rúbrica, resultados, reportes, cartas, accesos con QR, seguimiento y coordinación. |
+| `config.json` | Datos publicados de la plataforma: alumnos, empresas, jurado, evaluadores invitados, rúbrica y horarios. Se genera desde Coordinación. |
 | `.nojekyll` | Le indica a GitHub Pages que publique el archivo tal cual. |
 | `apps-script/Code.gs` | Código para la Hoja de Google que reúne las evaluaciones de todos (registro general). |
 | `README.md` | Estas instrucciones. |
@@ -35,6 +36,20 @@ Descárgalos desde la pestaña **Accesos** con **Descargar todos los QR (.zip)**
 Abre `…/#coordinacion` y escribe la **clave de coordinación**. Ese navegador queda como coordinación: administra la plataforma (programa, practicantes, jurado, rúbrica, firmas) y ve Resultados, Reportes, **Reporte general** y Seguimiento. Para salir, en Coordinación pulsa **Salir de coordinación**.
 
 Los evaluadores no ven esas secciones: solo Programa, Evaluar, Rúbrica, Cartas y Accesos, con sus propias calificaciones.
+
+## Guardar nombres, empresas e invitados en la liga
+
+Todo lo que editas en **Coordinación** (alumnos, empresas, jurado, **evaluadores invitados**, rúbrica, horarios) se guarda en tu navegador. Para que lo vean todos los evaluadores:
+
+1. En **Coordinación**, sección **Publicar**, pulsa **Descargar config.json**.
+2. En GitHub entra a **Add file → Upload files**, arrastra `config.json` y pulsa **Commit changes**.
+3. En 1 o 2 minutos la liga muestra los cambios a todos.
+
+Los **evaluadores invitados** se registran con nombre, cargo y empresa en la sección **Evaluadores invitados**. Al evaluar eligen su nombre de la lista y sus datos se llenan solos; el celular también recuerda sus datos para los siguientes alumnos. Los invitados que te envían sus firmas se agregan solos a la lista.
+
+## Corregir una calificación
+
+Mientras califica, cada evaluador puede pulsar **Guardar** y seguir después. Si ya firmó y encuentra un error, pulsa **Editar calificación**, corrige, vuelve a **Firmar** y vuelve a **Enviar a Tania**: la página le avisa que tiene cambios sin enviar, y la nueva versión reemplaza a la anterior en el reporte.
 
 ## Cómo llegan las evaluaciones al reporte general (sin configurar nada)
 

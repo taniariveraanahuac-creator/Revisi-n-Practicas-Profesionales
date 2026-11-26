@@ -564,6 +564,7 @@ td.avg{font-family:var(--f-display);font-weight:800;font-size:25px;letter-spacin
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:10px;font-size:15px;font-weight:500;z-index:40;max-width:90vw;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 @media (max-width:720px){body.on-eval #toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.sendbar.changed{border:2px solid #c8470a;background:#fff4ec}.pubcard.warn{border:2px solid #c8470a;background:#fff4ec}
 .sendbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.sendbar .grow{flex:1;min-width:200px;display:grid;gap:2px}.sendbar b{display:flex;gap:6px;align-items:center}
 .sendqr{width:min(320px,100%);aspect-ratio:1;background:#fff;padding:12px;border-radius:14px;border:1px solid #e7dfd8;margin:0 auto}.sendqr svg{width:100%;height:100%;display:block}
 #printArea{display:none}
@@ -756,11 +757,11 @@ function applySched(){
   CR_BASE.forEach(function(b,i){var o=crx[b.id]||{},c=CRIT[i];c.t=o.t||b.t;c.w=(o.w!=null&&o.w!=='')?+o.w:b.w;c.d=b.d.map(function(t,j){return (o.d&&o.d[j])||t;});});
   if(typeof S!=='undefined'&&ST.length){['sid','lsid','rsid'].forEach(function(k){if(!stById(S[k]))S[k]=ST[0].id;});}
 }
-function persistLocal(){localStorage.setItem(LS,JSON.stringify({local:S.local,who:S.localWho,sched:S.sched}));}
+function persistLocal(){localStorage.setItem(LS,JSON.stringify({local:S.local,who:S.localWho,sched:S.sched,lf:S.lf}));}
 function saveSched(){
   applySched();
   if(S.mode==='db'){if(S.schedRef)S.schedRef.set(S.sched).catch(function(err){toast('No se pudo guardar el programa: '+((err&&err.message)||'error'));});}
-  else{try{persistLocal();}catch(e){}}
+  else{try{persistLocal();}catch(e){}if(ON_WEB&&isCoord())setDirty(true);}
   render();
 }
 var HSUB={general:'Promedio de todos',programa:'Fechas y detalles',evaluar:'Califica con la rúbrica',resultados:'Consulta calificaciones',reportes:'Descarga documentos',rubrica:'Criterios de evaluación',cartas:'Invitaciones y constancias',accesos:'Códigos QR y ligas',seguimiento:'Avance del jurado',coord:'Panel de control'};
@@ -812,7 +813,7 @@ function byWho(){
 }
 function myData(){var w=who();if(!w)return null;return S.mode==='db'?(S.docs[S.uid]||null):(S.local[w]||null);}
 function signedCount(sid){var bw=byWho(),n=0;EVALS.forEach(function(e){var ev=bw[e.k]&&bw[e.k].evals&&bw[e.k].evals[sid];if(ev&&ev.signedAt)n++;});return n;}
-function loadLocal(){try{var r=JSON.parse(localStorage.getItem(LS)||'null');if(r){S.local=r.local||{};S.localWho=r.who||null;if(r.sched)S.sched=Object.assign({venue:VENUE0,cs:'10:00',ce:'10:20',slots:{}},r.sched);}}catch(e){}}
+function loadLocal(){try{var r=JSON.parse(localStorage.getItem(LS)||'null');if(r){S.local=r.local||{};S.localWho=r.who||null;if(r.sched)S.sched=Object.assign({venue:VENUE0,cs:'10:00',ce:'10:20',slots:{}},r.sched);if(r.lf)S.lf=r.lf;}}catch(e){}}
 function commit(d){
   d.updatedAt=new Date().toISOString();
   if(S.mode==='db'){S.docs[S.uid]=d;S.pending=JSON.parse(JSON.stringify(d));S.ref.set(d).catch(function(err){S.pending=null;toast('No se pudo guardar: '+((err&&err.message)||'error')+'. Revisa que tengas acceso a esta página.');});}
@@ -916,10 +917,10 @@ function viewEvaluar(){
     var verified=S.mode==='db'&&S.names[S.uid]?'<br>Cuenta verificada: '+esc(S.names[S.uid]):'';
     sign='<div class="sig"><div><div class="name">'+esc(isG?((ev.gn||'').trim()||me.n):me.n)+'</div><div class="meta">'+esc(isG?cargoOf({e:me,ev:ev},s):me.cargo)+'</div></div>'+
       '<div class="meta"><span class="pill ok">'+ic('check',13)+'Evaluación firmada</span><br>'+esc(fdate(ev.signedAt))+'<br>Folio '+esc(ev.folio||'')+verified+'</div>'+
-      '<button class="btn" data-act="unsign">'+ic('undo',18)+'Retirar firma para corregir</button></div>';
+      '<button class="btn" data-act="unsign">'+ic('pen',18)+'Editar calificación</button></div>';
   }else{
     sign='<div class="sig"><div class="meta" style="max-width:420px">'+(ok?'Tu calificación para este practicante es <b>'+fmt(tot)+' / 100</b>. Al firmar queda registrada con tu nombre y la hora.':'Te falta calificar <b>'+miss+' de '+CRIT.length+'</b> criterios. Si firmas ahora te llevamos al primero pendiente.')+'</div>'+
-      '<button class="btn primary" data-act="sign">'+ic('pen',18)+'Firmar evaluación</button></div>';
+      '<div class="row"><button class="btn" data-act="savedraft">'+ic('check',18)+'Guardar</button><button class="btn primary" data-act="sign">'+ic('pen',18)+'Firmar evaluación</button></div></div>';
   }
   var idx=ST.indexOf(s), nxt=ST[(idx+1)%ST.length], prv=ST[(idx-1+ST.length)%ST.length];
   var doneN=ST.filter(function(x){var e=d.evals&&d.evals[x.id];return e&&e.signedAt;}).length;
@@ -928,9 +929,10 @@ function viewEvaluar(){
     '<label class="switch"><input type="checkbox" data-auto="1"'+(S.auto?' checked':'')+'> Avanzar al firmar</label>'+
     '<button class="btn icon" data-act="pick" data-sid="'+nxt.id+'" aria-label="Siguiente practicante: '+esc(nxt.n)+'">'+ic('arrow',20)+'</button></div>';
 
-  var gdef={gn:ev.gn!=null?ev.gn:((S.lf[s.id]&&S.lf[s.id].rep)||s.rep||''),gc:ev.gc!=null?ev.gc:((S.lf[s.id]&&S.lf[s.id].cargo)||''),ge:ev.ge!=null?ev.ge:((S.lf[s.id]&&S.lf[s.id].emp)||s.e)};
+  var gprof=guestProfile();
+  var gdef={gn:ev.gn!=null?ev.gn:gprof.gn?gprof.gn:((S.lf[s.id]&&S.lf[s.id].rep)||s.rep||''),gc:ev.gc!=null?ev.gc:gprof.gc?gprof.gc:((S.lf[s.id]&&S.lf[s.id].cargo)||''),ge:ev.ge!=null?ev.ge:((S.lf[s.id]&&S.lf[s.id].emp)||s.e)};
   var gcard=isG?'<section class="card stack" aria-labelledby="gtitle"><div class="guestnote">'+ic('building',20)+'<div><h3 id="gtitle" style="font-size:21px">Datos del evaluador invitado</h3><p class="muted small" style="margin:4px 0 0">Representante de la empresa donde '+esc(s.n.split(' ')[0])+' hizo sus prácticas. Tu nombre aparecerá en la firma y en el reporte.</p></div></div>'+
-    '<div class="gfields"><label class="f" for="gf_gn">Nombre completo <span class="req" aria-hidden="true">*</span><input type="text" id="gf_gn" data-gf="gn" autocomplete="name" required aria-required="true" value="'+esc(gdef.gn)+'"'+(signed?' disabled':'')+'></label>'+
+    (guestsList().length&&!signed?'<label class="f" for="gpick">Elige tu nombre (si ya estás registrado)<select id="gpick" data-gpick="1"><option value="">— Escribir mis datos —</option>'+guestsList().map(function(g){return '<option value="'+esc(g.id)+'"'+((ev.gn||gdef.gn)===g.n?' selected':'')+'>'+esc(g.n)+(g.e?' · '+esc(g.e):'')+'</option>';}).join('')+'</select></label>':'')+'<div class="gfields"><label class="f" for="gf_gn">Nombre completo <span class="req" aria-hidden="true">*</span><input type="text" id="gf_gn" data-gf="gn" autocomplete="name" required aria-required="true" value="'+esc(gdef.gn)+'"'+(signed?' disabled':'')+'></label>'+
     '<label class="f" for="gf_gc">Cargo<input type="text" id="gf_gc" data-gf="gc" autocomplete="organization-title" value="'+esc(gdef.gc)+'"'+(signed?' disabled':'')+'></label>'+
     '<label class="f" for="gf_ge">Empresa<input type="text" id="gf_ge" data-gf="ge" autocomplete="organization" value="'+esc(gdef.ge)+'"'+(signed?' disabled':'')+'></label></div>'+
     '<div class="ferr" id="gf_err" hidden>'+ic('info',16)+'<span>Escribe tu nombre completo para poder firmar.</span></div></section>':'';
@@ -1218,7 +1220,7 @@ function cfgIn(key,val,label,type){type=type||'text';var id='cf_'+key.replace(/[
 function coordParts(){
   if(!isCoord())return null;
   var sc=S.sched,wsum=CRIT.reduce(function(a,c){return a+(+c.w||0);},0);
-  var nav=[['evento','Evento'],['practicantes','Practicantes'],['jurado','Jurado'],['rubrica','Rúbrica'],['firmas','Firmas'],['datos','Datos']].map(function(x){return '<a class="btn ghost sm" href="#co-'+x[0]+'" data-act="cojump" data-sec="'+x[0]+'">'+x[1]+'</a>';}).join('');
+  var nav=[['evento','Evento'],['practicantes','Practicantes'],['jurado','Jurado'],['rubrica','Rúbrica'],['invitados','Invitados'],['firmas','Firmas'],['datos','Datos'],['publicar','Publicar']].map(function(x){return '<a class="btn ghost sm" href="#co-'+x[0]+'" data-act="cojump" data-sec="'+x[0]+'">'+x[1]+'</a>';}).join('');
   var evento='<section class="card stack co-sec" id="co-evento"><div class="co-h"><span class="idx">01</span><h3>Evento</h3><p class="muted small">Títulos del encabezado, lugar y coffee break.</p></div><div class="co-grid">'+
     cfgIn('top:hl',sc.hl||'Prácticas Profesionales','Título (naranja)')+cfgIn('top:lic',sc.lic||'Administración y Dirección de Empresas','Programa')+cfgIn('top:motto',sc.motto||'Líderes que trascienden','Lema')+cfgIn('top:venue',sc.venue,'Lugar')+
     cfgIn('top:cs',sc.cs,'Coffee break, inicio','time')+cfgIn('top:ce',sc.ce,'Coffee break, fin','time')+'</div>'+'</section>';
@@ -1244,7 +1246,7 @@ function coordParts(){
   return {top:top,evento:evento,practicantes:practicantes,jurado:jurado,rubrica:rubrica,firmas:firmas,datos:datos};
 }
 function viewCoord(){var P=coordParts();if(!P&&ON_WEB&&!window.claude)return pinView();if(!P)return '<div class="card"><h2 style="font-size:24px">Sección reservada a la coordinación</h2><p class="muted">Solo la coordinadora del programa puede editar esta sección.</p></div>';
-  return '<div class="stack">'+P.top+'<div class="secbar"><button class="btn dark" data-act="gotab" data-t="seguimiento">'+ic('chart',18)+'Ver seguimiento de evaluadores</button><button class="btn" data-act="gotab" data-t="accesos">'+ic('qr',18)+'Ligas y códigos QR</button><button class="btn" data-act="gotab" data-t="general">'+ic('award',18)+'Reporte general</button>'+(ON_WEB&&!window.claude?'<button class="btn ghost" data-act="coordout">Salir de coordinación</button>':'')+'</div>'+P.evento+P.practicantes+P.jurado+P.rubrica+P.firmas+P.datos+'</div>';}
+  return '<div class="stack">'+P.top+'<div class="secbar"><button class="btn dark" data-act="gotab" data-t="seguimiento">'+ic('chart',18)+'Ver seguimiento de evaluadores</button><button class="btn" data-act="gotab" data-t="accesos">'+ic('qr',18)+'Ligas y códigos QR</button><button class="btn" data-act="gotab" data-t="general">'+ic('award',18)+'Reporte general</button>'+(ON_WEB&&!window.claude?'<button class="btn ghost" data-act="coordout">Salir de coordinación</button>':'')+'</div>'+publishCard()+P.evento+P.practicantes+P.jurado+guestsSection()+P.rubrica+P.firmas+P.datos+'</div>';}
 var EDITMAP={programa:['evento','practicantes'],evaluar:['jurado'],resultados:['firmas'],reportes:['firmas'],rubrica:['rubrica'],cartas:['jurado','practicantes'],accesos:['jurado']};
 function editDock(){
   if(!S.editMode||!isCoord()||!EDITMAP[S.tab])return '';
@@ -1258,6 +1260,7 @@ function setCfg(key,v){
     if(f==='d'||f==='h'){if(v){(sc.slots[id]=sc.slots[id]||{})[f]=v;}}
     else{var ad=sc.add.filter(function(a){return a.id===id;})[0];if(ad)ad[f]=v.trim();else (sc.stx[id]=sc.stx[id]||{})[f]=v.trim();}}
   else if(p[0]==='ev'){(sc.evx[p[1]]=sc.evx[p[1]]||{})[p[2]]=v.trim();}
+  else if(p[0]==='gu'){var gg=(sc.guests||[]).filter(function(x){return x.id===p[1];})[0];if(gg)gg[p[2]]=v.trim();}
   else if(p[0]==='cr'){var o=sc.crx[p[1]]=sc.crx[p[1]]||{};if(p[2]==='w'){var n=Math.max(0,Math.round(+v||0));o.w=n;}else if(p[2]==='d'){o.d=o.d||[];o.d[+p[3]]=v.trim();}else o.t=v.trim();}
   saveSched();toast('Guardado');
 }
@@ -1470,6 +1473,7 @@ function importPayload(str){
     var rec={id:idOf(x.s),w:p.w,sid:x.s,lv:lv,note:x.n||'',gn:x.gn||'',gc:x.gc||'',ge:x.ge||'',signedAt:x.t,folio:x.f||''};
     IMPORTS=IMPORTS.filter(function(y){return y.id!==rec.id;});IMPORTS.push(rec);n++;});
   saveImports();
+  if(g){var addd=false;p.r.forEach(function(x){if(addGuestIfNew(x.gn,x.gc,x.ge))addd=true;});if(addd){try{persistLocal();}catch(x){}setDirty(true);}}
   var e=evByK(p.w),nm=g?((p.r[0]&&p.r[0].gn)||'Invitado'):e.n;
   toast('Recibidas '+n+' evaluaciones de '+nm);
 }
@@ -1480,7 +1484,8 @@ function extRecs(){
 }
 function viewSend(){
   var w=who();if(!w)return '';var p=packMine(),link=p?sendLink():null;
-  if(!S.showSend)return '<section class="card sendbar"><div class="grow"><b>'+ic('arrow',18)+' Entrega tus evaluaciones a la coordinación</b><span class="muted small">'+(p?p.r.length+' evaluaciones firmadas listas para enviar.':'Firma al menos una evaluación para poder enviarla.')+'</span></div><button class="btn primary" data-act="showsend"'+(p?'':' disabled')+'>'+ic('qr',18)+'Enviar a Tania</button></section>';
+  var sentPrev=null;try{sentPrev=localStorage.getItem('pp-sent-'+w);}catch(x){}var changed=!!(p&&sentPrev&&sentPrev!==JSON.stringify(p));
+  if(!S.showSend)return '<section class="card sendbar'+(changed?' changed':'')+'"><div class="grow"><b>'+ic('arrow',18)+(changed?' Tienes cambios sin enviar a la coordinación':' Entrega tus evaluaciones a la coordinación')+'</b><span class="muted small">'+(changed?'Corregiste o firmaste algo después de tu último envío: vuelve a enviar.':p?p.r.length+' evaluaciones firmadas listas para enviar.':'Firma al menos una evaluación para poder enviarla.')+'</span></div><button class="btn primary" data-act="showsend"'+(p?'':' disabled')+'>'+ic('qr',18)+'Enviar a Tania</button></section>';
   var big=link&&link.length<2200;
   var wa='https://wa.me/?text='+encodeURIComponent('Evaluaciones de Prácticas Profesionales: '+link);
   var mail='mailto:coordadmin.uac@anahuac.mx?subject='+encodeURIComponent('Evaluaciones Prácticas Profesionales')+'&body='+encodeURIComponent(link);
@@ -1575,6 +1580,41 @@ function studentTable(s){
     '<p class="muted small" style="margin:0">El promedio es la media de quienes ya firmaron: cuenta igual con 1, 2, 3 o más evaluadores.</p></section>';
 }
 
+/* ---------- Publicar configuración en la liga (config.json en GitHub) ---------- */
+var PUB=null;
+function isDirty(){try{return localStorage.getItem('pp-dirty')==='1';}catch(e){return false;}}
+function setDirty(v){try{if(v)localStorage.setItem('pp-dirty','1');else localStorage.removeItem('pp-dirty');}catch(e){}}
+function pubData(){return {version:1,savedAt:new Date().toISOString(),sched:S.sched,lf:S.lf};}
+function loadPublished(){
+  if(!ON_WEB||window.claude)return;
+  fetch('config.json?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j||!j.sched)return;PUB=j;
+    if(isDirty()){if(JSON.stringify(j.sched)===JSON.stringify(S.sched))setDirty(false);softRender();return;}
+    S.sched=Object.assign({venue:VENUE0,cs:'10:00',ce:'10:20',slots:{}},j.sched);if(j.lf)S.lf=j.lf;applySched();try{persistLocal();}catch(e){}softRender();
+  }).catch(function(){});
+}
+async function downloadConfig(){if(!isCoord())return;var blob=new Blob([JSON.stringify(pubData(),null,1)],{type:'application/json'});saveFile('config.json',blob);toast('Descargado config.json: súbelo a GitHub para publicarlo');}
+function publishCard(){
+  if(!ON_WEB||window.claude||!isCoord())return '';
+  var sc=S.sched||{},has=function(o){return o&&(Array.isArray(o)?o.length:Object.keys(o).length);};
+  var d=isDirty()||(!PUB&&!!(has(sc.stx)||has(sc.add)||has(sc.evx)||has(sc.crx)||has(sc.slots)||has(sc.guests)||has(S.lf)));
+  return '<section class="card stack pubcard'+(d?' warn':'')+'" id="co-publicar"><div class="sec-h"><span class="badge">'+ic(d?'info':'check',20)+'</span><div><h3 style="font-size:19px;margin:0">'+(d?'Tienes cambios que aún no están en la liga':'La liga está al día')+'</h3><p class="muted small" style="margin:4px 0 0">'+(d?'Tus cambios (alumnos, empresas, jurado, invitados, rúbrica u horarios) están guardados en este navegador. Para que los vean todos los evaluadores, publícalos:':'Todo lo que editas aquí se guarda en este navegador. Cuando cambies algo, publícalo para que lo vean todos.')+'</p></div></div>'+
+    '<ol class="small" style="margin:0;padding-left:20px"><li>Pulsa <b>Descargar config.json</b>.</li><li>En GitHub, en el repositorio <b>Revisi-n-Practicas-Profesionales</b>, entra a <b>Add file → Upload files</b>, arrastra <b>config.json</b> y pulsa <b>Commit changes</b>.</li><li>En 1 o 2 minutos todos ven los cambios.</li></ol>'+
+    '<div class="row"><button class="btn primary" data-act="dlconfig"'+(S.dwn?'':' disabled')+'>'+ic('download',18)+'Descargar config.json</button><a class="btn" href="https://github.com/taniariveraanahuac-creator/Revisi-n-Practicas-Profesionales/upload/main" target="_blank" rel="noopener">'+ic('ext',16)+'Abrir GitHub para subirlo</a></div></section>';
+}
+/* ---------- Evaluadores invitados registrados ---------- */
+function guestsList(){return (S.sched.guests||[]);}
+function guestProfile(){try{return JSON.parse(localStorage.getItem('pp-guest')||'null')||{};}catch(e){return {};}}
+function addGuestIfNew(gn,gc,ge){gn=(gn||'').trim();if(!gn)return false;var sc=S.sched;sc.guests=sc.guests||[];
+  if(sc.guests.some(function(g){return (g.n||'').trim().toLowerCase()===gn.toLowerCase();}))return false;
+  sc.guests.push({id:'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),n:gn,c:(gc||'').trim(),e:(ge||'').trim()});return true;}
+function guestsSection(){
+  var rows=guestsList().map(function(g,i){var del=S.confirm==='gu:'+g.id;
+    return '<div class="co-row"><span class="co-n num">'+('0'+(i+1)).slice(-2)+'</span><div class="co-fields co-ev">'+cfgIn('gu:'+g.id+':n',g.n,'Nombre')+cfgIn('gu:'+g.id+':c',g.c||'','Cargo')+cfgIn('gu:'+g.id+':e',g.e||'','Empresa')+'</div><button class="btn '+(del?'danger':'ghost')+' sm" data-act="gu-del" data-id="'+g.id+'" aria-label="Quitar a '+esc(g.n)+'">'+(del?'Confirmar':ic('trash',16))+'</button></div>';}).join('');
+  return '<section class="card stack co-sec" id="co-invitados"><div class="co-h"><span class="idx">03b</span><h3>Evaluadores invitados</h3><p class="muted small">Nombre, cargo y empresa de los invitados. Al evaluar, cada invitado elige su nombre de esta lista y sus datos se llenan solos. Los que evalúan y te envían sus firmas se agregan aquí automáticamente.</p></div>'+
+    (rows||'<p class="muted" style="margin:0">Aún no hay invitados registrados.</p>')+'<div><button class="btn primary" data-act="gu-add">'+ic('plus',18)+'Agregar invitado</button></div></section>';
+}
+
 function viewGeneral(){
   if(!isCoord())return '<div class="card"><h2 style="font-size:24px">Sección reservada a la coordinación</h2></div>';
   var ic2=IMPORTS.length,cfi=S.confirm==='clearimp';
@@ -1630,6 +1670,7 @@ app.addEventListener('keydown',function(e){
   var d={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key];if(!d)return;
   e.preventDefault();var i=(+b.dataset.i+d+LV.length)%LV.length,n=document.getElementById('lv-'+b.dataset.c+'-'+i);if(n){n.focus();n.click();}
 });
+app.addEventListener('change',function(e){var t=e.target;if(t&&t.dataset&&t.dataset.gpick){var g=guestsList().filter(function(x){return x.id===t.value;})[0];if(!g)return;var r=ensureEv(S.sid);if(r.ev.signedAt)return;r.ev.gn=g.n;r.ev.gc=g.c||'';r.ev.ge=g.e||'';commit(r.d);render();}});
 app.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.target.id==='pinIn'){var bb=app.querySelector('[data-act="pinok"]');if(bb)bb.click();}});
 app.addEventListener('click',function(e){
   var b=e.target.closest('[data-act]');if(!b||b.disabled)return;var a=b.dataset.act;
@@ -1639,11 +1680,15 @@ app.addEventListener('click',function(e){
     if(isGuest(who())){['gn','gc','ge'].forEach(function(k){var el=document.getElementById('gf_'+k);if(el)r2.ev[k]=el.value.trim();});
       if(!r2.ev.gn){var ge=document.getElementById('gf_err'),gi=document.getElementById('gf_gn');if(ge)ge.hidden=false;if(gi){gi.setAttribute('aria-invalid','true');gi.setAttribute('aria-describedby','gf_err');gi.scrollIntoView({block:'center',behavior:'smooth'});gi.focus({preventScroll:true});}toast('Escribe tu nombre completo para firmar');return;}}
     var miss=CRIT.filter(function(c){return r2.ev.lv[c.id]==null;});
-    if(miss.length){toast('Falta calificar: '+miss.map(function(c){return c.t;}).join(', '));var fe=document.getElementById('lv-'+miss[0].id+'-0');if(fe){fe.scrollIntoView({block:'center',behavior:'smooth'});fe.focus({preventScroll:true});}return;}var ts=new Date().toISOString(),tot=score(r2.ev);r2.ev.signedAt=ts;r2.ev.total=Math.round(tot*10)/10;r2.ev.folio=folio(who(),S.sid,ts,tot);commit(r2.d);cloudSend('sign',who(),S.sid,r2.ev);render();afterSign();}
-  else if(a==='unsign'){var r3=ensureEv(S.sid);r3.ev.signedAt=null;r3.ev.folio=null;r3.ev.total=null;commit(r3.d);cloudSend('unsign',who(),S.sid,r3.ev);render();}
+    if(miss.length){toast('Falta calificar: '+miss.map(function(c){return c.t;}).join(', '));var fe=document.getElementById('lv-'+miss[0].id+'-0');if(fe){fe.scrollIntoView({block:'center',behavior:'smooth'});fe.focus({preventScroll:true});}return;}if(isGuest(who())){try{localStorage.setItem('pp-guest',JSON.stringify({gn:r2.ev.gn||'',gc:r2.ev.gc||'',ge:r2.ev.ge||''}));}catch(x){}}var ts=new Date().toISOString(),tot=score(r2.ev);r2.ev.signedAt=ts;r2.ev.total=Math.round(tot*10)/10;r2.ev.folio=folio(who(),S.sid,ts,tot);commit(r2.d);cloudSend('sign',who(),S.sid,r2.ev);render();afterSign();}
+  else if(a==='unsign'){var r3=ensureEv(S.sid);r3.ev.signedAt=null;r3.ev.folio=null;r3.ev.total=null;commit(r3.d);cloudSend('unsign',who(),S.sid,r3.ev);render();toast('Ya puedes corregir la calificación. Vuelve a firmar y a enviar.');}
   else if(a==='cloudkey'){var ki=document.getElementById('cloudKey');try{localStorage.setItem('pp-cloud-key',(ki&&ki.value||'').trim());}catch(x){}toast('Clave guardada en este navegador');cloudStart();render();}
   else if(a==='cloudload'){cloudLoad();}
-  else if(a==='showsend'){S.showSend=!S.showSend;render();}
+  else if(a==='showsend'){S.showSend=!S.showSend;if(S.showSend){try{localStorage.setItem('pp-sent-'+who(),JSON.stringify(packMine()));}catch(x){}}render();}
+  else if(a==='savedraft'){var rd=ensureEv(S.sid);if(isGuest(who())){['gn','gc','ge'].forEach(function(k){var el=document.getElementById('gf_'+k);if(el)rd.ev[k]=el.value.trim();});}var nt=document.getElementById('note');if(nt)rd.ev.note=nt.value;commit(rd.d);toast('Calificación guardada. Puedes seguir editando y firmar cuando esté lista.');render();}
+  else if(a==='dlconfig'){downloadConfig();}
+  else if(a==='gu-add'){var sc2=S.sched;sc2.guests=sc2.guests||[];sc2.guests.push({id:'g'+Date.now().toString(36),n:'Nuevo invitado',c:'',e:''});saveSched();toast('Invitado agregado. Escribe sus datos.');}
+  else if(a==='gu-del'){var gk='gu:'+b.dataset.id;if(S.confirm!==gk){S.confirm=gk;render();return;}S.confirm=null;S.sched.guests=(S.sched.guests||[]).filter(function(x){return x.id!==b.dataset.id;});saveSched();}
   else if(a==='copysend'){var sl=sendLink();if(sl)copyText(sl);}
   else if(a==='pinok'){var pi=document.getElementById('pinIn');sha256((pi&&pi.value||'').trim()).then(function(hh){if(hh===COORD_HASH){try{localStorage.setItem('pp-coord','1');}catch(x){}toast('Bienvenida, coordinación');if(S.importData){S.tab='general';}cloudStart();render();}else{toast('Clave incorrecta');}});}
   else if(a==='coordout'){try{localStorage.removeItem('pp-coord');}catch(x){}S.tab='programa';toast('Saliste de coordinación en este navegador');render();}
@@ -1699,7 +1744,7 @@ app.addEventListener('input',function(e){
   var t=e.target;
   if(t.dataset.gf){var rg=ensureEv(S.sid);if(rg.ev.signedAt)return;rg.ev[t.dataset.gf]=t.value;var er=document.getElementById('gf_err');if(er&&t.dataset.gf==='gn'&&t.value.trim()){er.hidden=true;t.removeAttribute('aria-invalid');}clearTimeout(saveT);saveT=setTimeout(function(){commit(rg.d);},700);return;}
   if(t.dataset.note){var r=ensureEv(S.sid);if(r.ev.signedAt)return;r.ev.note=t.value;clearTimeout(saveT);saveT=setTimeout(function(){commit(r.d);},700);}
-  else if(t.dataset.lf){(S.lf[S.lsid]=S.lf[S.lsid]||{})[t.dataset.lf]=t.value;document.getElementById('letterPrev').innerHTML=letterHTML();}
+  else if(t.dataset.lf){(S.lf[S.lsid]=S.lf[S.lsid]||{})[t.dataset.lf]=t.value;try{persistLocal();}catch(x){}if(ON_WEB&&isCoord())setDirty(true);document.getElementById('letterPrev').innerHTML=letterHTML();}
   else if(t.dataset.lfecha){S.fecha=t.value;document.getElementById('letterPrev').innerHTML=letterHTML();}
 });
 
@@ -1708,7 +1753,7 @@ async function boot(){
   routeHash();
   document.addEventListener('qrready',function(){if(S.tab==='accesos')render();});
   window.addEventListener('hashchange',function(){if(routeHash())render();});
-  S.fecha=today();loadLocal();applySched();render();cloudStart();
+  S.fecha=today();loadLocal();applySched();render();cloudStart();loadPublished();
   var c=window.claude;if(!c||!c.use){S.dwn=WEB_DWN;S.ready=true;render();return;}
   var r=await Promise.all([c.use('db'),c.use('user'),c.use('downloads')]).catch(function(){return [null,null,null];});
   S.dwn=r[2]||null;
