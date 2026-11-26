@@ -10,6 +10,7 @@ Coordinación: Mtra. Tania Rivera Lozano.
 |---|---|
 | `index.html` | La plataforma completa en un solo archivo: programa, evaluación con rúbrica, resultados, reportes, cartas, accesos con QR, seguimiento y coordinación. |
 | `.nojekyll` | Le indica a GitHub Pages que publique el archivo tal cual. |
+| `apps-script/Code.gs` | Código para la Hoja de Google que reúne las evaluaciones de todos (registro general). |
 | `README.md` | Estas instrucciones. |
 
 ## Publicar en GitHub Pages
@@ -39,18 +40,35 @@ https://TU-USUARIO.github.io/evaluacion-practicas-ade/#coordinacion
 
 Desde ese momento ese navegador muestra el panel de control y el interruptor **Editar**. No compartas esa liga con el jurado.
 
-## Importante: dónde se guardan las evaluaciones
+## Reporte general con las evaluaciones de todos
 
-GitHub Pages solo publica archivos; no tiene base de datos. En esta versión:
+La pestaña **Reporte general** (solo coordinación) reúne en un solo lugar las evaluaciones firmadas por todo el jurado y los invitados, desde cualquier celular o computadora, y saca el **promedio por alumno** con quienes ya firmaron (no hace falta que evalúen todos). Desde ahí se descarga un solo reporte en Word, se exporta a Excel o se imprime.
 
-- Cada evaluador guarda sus calificaciones y firmas **en su propio navegador**.
-- Los resultados y reportes muestran lo que hay en el navegador donde se abren.
-- Para reunir todo, usa el registro compartido de la versión en Claude, o captura las evaluaciones en un solo equipo cambiando de evaluador con un toque.
+Las evaluaciones se guardan en una Hoja de Google. Solo quien tenga la **clave de coordinación** puede leerlas.
 
-La versión publicada en Claude sí comparte en tiempo real las firmas de todo el jurado:
-https://claude.ai/artifact/EoJQ5TLRA1Wc6mbjykGwNn
+### Configuración (una sola vez, 10 minutos)
 
-Para que la versión de GitHub también comparta las evaluaciones se puede conectar a Google Apps Script con una hoja de cálculo, igual que la plataforma del Proyecto Integrador de ADM1401.
+1. Crea una Hoja de Google nueva, por ejemplo `Evaluaciones Prácticas Profesionales`.
+2. En la hoja entra a **Extensiones → Apps Script**.
+3. Borra lo que aparece y pega el contenido de `apps-script/Code.gs`.
+4. En la línea `const CLAVE_COORDINACION = 'CAMBIA-ESTA-CLAVE';` escribe una clave que solo tú conozcas. Guarda.
+5. **Implementar → Nueva implementación →** tipo **Aplicación web**. Ejecutar como: **Yo**. Quién tiene acceso: **Cualquier persona**. Autoriza los permisos.
+6. Copia la URL que termina en `/exec`.
+7. En `index.html` busca `var CLOUD_URL='';` y pega la URL entre las comillas. Guarda el archivo en GitHub.
+8. Abre la página con `#coordinacion`, entra a **Reporte general**, escribe tu clave y pulsa **Guardar clave**.
+
+Desde ese momento cada evaluación firmada se envía sola al registro general y el reporte se actualiza cada 30 segundos.
+
+Sin la URL configurada la página sigue funcionando como antes: cada evaluador guarda sus calificaciones en su propio navegador.
+
+## QR para invitados evaluadores
+
+En **Accesos** hay un **QR general para invitados evaluadores**: cualquier invitado lo escanea, escribe su nombre y cargo, elige al alumno y firma. Si varios invitados evalúan al mismo alumno, todos cuentan en el promedio. También siguen los QR por practicante para el representante de cada empresa.
+
+## Quién ve qué
+
+- **Evaluadores e invitados:** Programa, Evaluar, Rúbrica, Cartas y Accesos. Solo ven sus propias calificaciones.
+- **Coordinación** (navegador activado con `#coordinacion`): además Resultados, Reportes, Reporte general, Seguimiento y Coordinación.
 
 ## Requisitos
 

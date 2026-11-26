@@ -564,6 +564,7 @@ td.avg{font-family:var(--f-display);font-weight:800;font-size:25px;letter-spacin
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:10px;font-size:15px;font-weight:500;z-index:40;max-width:90vw;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 @media (max-width:720px){body.on-eval #toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{body *{visibility:hidden}#genPaper,#genPaper *{visibility:visible}#genPaper{position:absolute;left:0;top:0;width:100%;box-shadow:none;border:0}}
 </style>
 </head>
 <body>
@@ -669,7 +670,7 @@ var ST=[
 ];
 ST.forEach(function(s){s.d0=s.d;s.dd=s.d;s.hd=s.h;});
 var ST_BASE=JSON.parse(JSON.stringify(ST)),EV_BASE=JSON.parse(JSON.stringify(EVALS)),CR_BASE=JSON.parse(JSON.stringify(CRIT));
-var TABS=[['programa','Programa','calendar'],['evaluar','Evaluar','clip'],['resultados','Resultados','chart'],['reportes','Reportes','file'],['rubrica','Rúbrica','book'],['cartas','Cartas','mail'],['accesos','Accesos','qr'],['seguimiento','Seguimiento','chart'],['coord','Coordinación','shield']];
+var TABS=[['programa','Programa','calendar'],['evaluar','Evaluar','clip'],['resultados','Resultados','chart'],['reportes','Reportes','file'],['general','Reporte general','award'],['rubrica','Rúbrica','book'],['cartas','Cartas','mail'],['accesos','Accesos','qr'],['seguimiento','Seguimiento','chart'],['coord','Coordinación','shield']];
 var ON_WEB=/^https?:$/.test(location.protocol)&&!/claude\.ai$|claudeusercontent|claude\.site/.test(location.hostname);
 var BASE_URL=ON_WEB?(location.origin+location.pathname):'https://claude.ai/artifact/EoJQ5TLRA1Wc6mbjykGwNn';
 /* Descargas fuera de Claude: enlace de descarga normal del navegador */
@@ -757,7 +758,7 @@ function saveSched(){
   else{try{persistLocal();}catch(e){}}
   render();
 }
-var HSUB={programa:'Fechas y detalles',evaluar:'Califica con la rúbrica',resultados:'Consulta calificaciones',reportes:'Descarga documentos',rubrica:'Criterios de evaluación',cartas:'Invitaciones y constancias',accesos:'Códigos QR y ligas',seguimiento:'Avance del jurado',coord:'Panel de control'};
+var HSUB={general:'Promedio de todos',programa:'Fechas y detalles',evaluar:'Califica con la rúbrica',resultados:'Consulta calificaciones',reportes:'Descarga documentos',rubrica:'Criterios de evaluación',cartas:'Invitaciones y constancias',accesos:'Códigos QR y ligas',seguimiento:'Avance del jurado',coord:'Panel de control'};
 function renderHeroNav(){var hn=document.getElementById('heroNav');if(!hn)return;
   hn.innerHTML=TABS.filter(function(t){return (t[0]!=='coord'&&t[0]!=='seguimiento')||isCoord();}).map(function(t){var on=S.tab===t[0];
     return '<button class="hcard'+((t[0]==='coord'||t[0]==='seguimiento')?' coordc':'')+'" data-t="'+t[0]+'"'+(on?' aria-current="page"':'')+'><span class="ib">'+ic(t[2],22)+'</span><span class="tx"><b>'+t[1]+'</b><small>'+(HSUB[t[0]]||'')+'</small></span><span class="chev">'+ic('chevr',18)+'</span></button>';}).join('');}
@@ -1264,6 +1265,7 @@ function reopenEval(k,sid){
     if(d.who===k&&d.evals&&d.evals[sid]&&d.evals[sid].signedAt)t=d.evals[sid];
     else if(d.other&&d.other[k]&&d.other[k][sid]&&d.other[k][sid].signedAt)t=d.other[k][sid];
     if(t&&S.db){clear(t);d.updatedAt=new Date().toISOString();S.db.doc('evals/'+u).set(d).catch(function(err){toast('No se pudo reabrir: '+((err&&err.message)||'error'));});}});}
+  if(S.mode!=='db')cloudPost({action:'reopen',key:cloudKey(),rec:{w:k,sid:sid}},null);
   toast('Evaluación reabierta');render();
 }
 async function backupJSON(){if(!S.dwn){toast('La descarga no está disponible en esta vista.');return;}
@@ -1354,6 +1356,11 @@ function guestAccess(){
       '<div class="qbody"><div class="qr">'+qrSVG(url)+'</div><div class="qmeta"><div>'+st+'</div><div class="qlink">'+esc(url)+'</div></div></div>'+
       '<div class="qact"><button class="btn primary" data-act="actas" data-k="invitado" data-sid="'+s.id+'">'+ic('arrow',16)+'Entrar aquí</button><button class="btn" data-act="copylink" data-k="invitado" data-sid="'+s.id+'">'+ic('copy',16)+'Copiar liga</button><a class="btn" href="'+esc(url)+'" target="_blank" rel="noopener">'+ic('ext',16)+'Abrir</a><button class="btn" data-act="dlqr" data-k="invitado" data-sid="'+s.id+'"'+(S.dwn?'':' disabled')+'>'+ic('download',16)+'QR (.png)</button></div></article>';
   }).join('');
+  var gurl=evLink(g);
+  var general='<article class="qcard" style="border:2px solid var(--accent,#f25c05)"><div class="top"><span class="av">'+ic('users',20)+'</span><div style="min-width:0"><b>QR general para invitados evaluadores</b><span class="muted">Un solo código para cualquier invitado: escribe su nombre y elige al alumno que va a evaluar.</span></div></div>'+
+    '<div class="qbody"><div class="qr">'+qrSVG(gurl)+'</div><div class="qmeta"><div class="qlink">'+esc(gurl)+'</div></div></div>'+
+    '<div class="qact"><button class="btn primary" data-act="actas" data-k="invitado" data-sid="">'+ic('arrow',16)+'Entrar aquí</button><button class="btn" data-act="copylink" data-k="invitado">'+ic('copy',16)+'Copiar liga</button><a class="btn" href="'+esc(gurl)+'" target="_blank" rel="noopener">'+ic('ext',16)+'Abrir</a><button class="btn" data-act="dlqr" data-k="invitado" data-sid=""'+(S.dwn?'':' disabled')+'>'+ic('download',16)+'QR (.png)</button></div></article>';
+  cards=general+cards;
   return '<div class="sec-title" style="margin-top:28px"><span class="eyebrow-s">Evaluador invitado</span><h2>Un acceso para cada empresa.</h2><p>El representante de la empresa escanea el QR de su practicante, escribe su nombre y cargo, y califica con la misma rúbrica. Su evaluación entra al promedio y al reporte. La carta de invitación a la empresa ya incluye esta liga.</p></div><div class="qgrid">'+cards+'</div>';
 }
 function accessStrip(){
@@ -1408,13 +1415,95 @@ function routeHash(){
   return false;
 }
 
+/* ---------- Registro general en Google (Apps Script) ---------- */
+/* Pega aquí la URL de tu aplicación web de Apps Script (termina en /exec) */
+var CLOUD_URL='';
+var CLOUD={on:/^https:\/\/script\.google\.com\//.test(CLOUD_URL),recs:null,err:null,loading:false,at:null,timer:null};
+function devId(){try{var d=localStorage.getItem('pp-dev');if(!d){d=Math.random().toString(36).slice(2,10);localStorage.setItem('pp-dev',d);}return d;}catch(e){return 'x';}}
+function cloudKey(){try{return localStorage.getItem('pp-cloud-key')||'';}catch(e){return '';}}
+function cloudId(w,sid){return w+'|'+sid+(isGuest(w)?'|'+devId():'');}
+function cloudPost(body,okMsg){
+  if(!CLOUD.on||S.mode==='db')return;
+  fetch(CLOUD_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)})
+   .then(function(){if(okMsg)toast(okMsg);if(isCoord()&&cloudKey())setTimeout(cloudLoad,1500);})
+   .catch(function(){toast('Sin conexión: la evaluación quedó guardada en este navegador. Vuelve a firmar cuando tengas internet.');});
+}
+function cloudSend(action,w,sid,ev){
+  var s=stById(sid)||{},e=evByK(w)||{};ev=ev||{};
+  cloudPost({action:action,rec:{id:cloudId(w,sid),w:w,evaluador:e.guest?((ev.gn||'').trim()||e.n):e.n,sid:sid,practicante:s.n||sid,total:ev.total==null?'':ev.total,lv:ev.lv||{},note:ev.note||'',gn:ev.gn||'',gc:ev.gc||'',ge:ev.ge||'',signedAt:ev.signedAt||'',folio:ev.folio||''}},
+   action==='sign'?'Evaluación firmada y enviada al registro general':'Firma retirada del registro general');
+}
+function cloudLoad(){
+  var k=cloudKey();if(!CLOUD.on||!k)return;CLOUD.loading=true;softRender();
+  fetch(CLOUD_URL+'?action=list&key='+encodeURIComponent(k)).then(function(r){return r.json();}).then(function(j){
+    CLOUD.loading=false;if(!j||!j.ok){CLOUD.err=(j&&j.error)||'No se pudo leer el registro';CLOUD.recs=null;}else{CLOUD.err=null;CLOUD.recs=j.data||[];CLOUD.at=new Date();}softRender();
+  }).catch(function(){CLOUD.loading=false;CLOUD.err='No se pudo conectar con el registro general. Revisa tu internet.';softRender();});
+}
+function cloudEv(r){return {lv:r.lv||{},note:r.note||'',signedAt:r.signedAt,folio:r.folio,total:r.total,gn:r.gn||'',gc:r.gc||'',ge:r.ge||''};}
+/* Con el registro general cargado (solo coordinación), los promedios y reportes usan las firmas de todos */
+var _signedForLocal=signedFor;
+signedFor=function(sid){
+  var loc=_signedForLocal(sid);if(!CLOUD.recs)return loc;
+  var out=[],seen={};
+  CLOUD.recs.forEach(function(r){if(r.sid!==sid||!r.signedAt)return;var e=evByK(r.w);if(!e)return;var key=r.w+'|'+(e.guest?(r.gn||'').trim().toLowerCase():'');if(seen[key])return;seen[key]=1;out.push({e:e,ev:cloudEv(r)});});
+  loc.forEach(function(x){var key=x.e.k+'|'+(x.e.guest?(x.ev.gn||'').trim().toLowerCase():'');if(!seen[key]){seen[key]=1;out.push(x);}});
+  var ord={};EVALS.forEach(function(e,i){ord[e.k]=i;});out.sort(function(a,b){return ord[a.e.k]-ord[b.e.k];});
+  return out;
+};
+signedCount=function(sid){return signedFor(sid).length;};
+var _byWhoLocal=byWho;
+byWho=function(){
+  var m=_byWhoLocal();if(!CLOUD.recs)return m;
+  var o={};Object.keys(m).forEach(function(k){o[k]={who:k,evals:Object.assign({},(m[k]&&m[k].evals)||{})};});
+  CLOUD.recs.forEach(function(r){if(!r.signedAt||!evByK(r.w))return;o[r.w]=o[r.w]||{who:r.w,evals:{}};var c=o[r.w].evals[r.sid];if(!c||!c.signedAt)o[r.w].evals[r.sid]=cloudEv(r);});
+  return o;
+};
+function generalDoc(){
+  var p=[],rows=[],sum=0,n=0;
+  p.push({t:'Universidad Anáhuac Cancún · Escuela Internacional de Negocios',sz:10,col:'6E6259',after:40});
+  p.push({t:'Reporte general de evaluación de Prácticas Profesionales',b:true,sz:15,after:60});
+  p.push({t:'Licenciatura en Administración y Dirección de Empresas · Generado el '+today(),sz:10,after:200});
+  ST.forEach(function(s){var a=avgFor(s.id),L=signedFor(s.id);if(a!=null){sum+=a;n++;}rows.push([s.n,String(L.length),a==null?'Sin firmas':fmt(a),a==null?'–':band(a)]);});
+  p.push({t:'Resumen por alumno',b:true,sz:12,after:100});
+  p.push({table:{head:['Alumno','Evaluaciones firmadas','Promedio','Nivel'],rows:rows.concat(n?[{cells:['Promedio del grupo','',fmt(sum/n),band(sum/n)],tot:true}]:[]),first:3600}});
+  p.push({t:'El promedio de cada alumno es la media de las calificaciones de los evaluadores que firmaron, sobre 100 puntos. No es necesario que evalúen todos.',sz:9,col:'6E6259',before:120,after:240});
+  ST.forEach(function(s){var L=signedFor(s.id),a=avgFor(s.id);
+    p.push({t:s.n,b:true,sz:12,before:200,after:40});
+    p.push({t:s.e+(s.d?' · '+s.d+' '+(s.h||''):''),sz:9,col:'6E6259',after:80});
+    if(!L.length){p.push({t:'Aún no hay evaluaciones firmadas.',i:true,after:120});return;}
+    p.push({table:{head:['Evaluador','Cargo','Calificación','Firmado','Folio'],rows:L.map(function(x){return [fullName(x),cargoOf(x,s),fmt(score(x.ev)),fdate(x.ev.signedAt),x.ev.folio||'–'];}).concat([{cells:['Promedio','',fmt(a),band(a),L.length+' firmas'],tot:true}]),first:2600}});
+  });
+  return {file:'Reporte_general_Practicas_Profesionales.docx',paras:p};
+}
+function viewGeneral(){
+  if(!isCoord())return '<div class="card"><h2 style="font-size:24px">Sección reservada a la coordinación</h2></div>';
+  var setup='<section class="card stack"><div class="sec-title" style="margin:0"><span class="eyebrow-s">Configuración pendiente</span><h2>Conecta el registro general.</h2><p>Para reunir en un solo lugar las evaluaciones de todos los dispositivos, la página necesita una Hoja de Google con Apps Script. Sigue los pasos del archivo <b>README.md</b> del repositorio y escribe la URL en <b>CLOUD_URL</b> dentro de <b>index.html</b>.</p></div></section>';
+  var k=cloudKey();
+  var keyBox='<section class="card stack"><div class="row" style="align-items:end"><label class="f" style="flex:1;min-width:220px">Clave de coordinación<input id="cloudKey" type="password" value="'+esc(k)+'" placeholder="La clave que pusiste en Apps Script" autocomplete="off"></label><button class="btn primary" data-act="cloudkey">'+ic('shield',18)+'Guardar clave</button><button class="btn" data-act="cloudload"'+(k?'':' disabled')+'>'+ic('undo',18)+(CLOUD.loading?'Actualizando…':'Actualizar ahora')+'</button></div>'+
+    '<p class="muted small" style="margin:0">'+(CLOUD.err?'<b style="color:#b3261e">'+esc(CLOUD.err)+'</b>':CLOUD.at?'Última actualización: '+esc(CLOUD.at.toLocaleTimeString('es-MX'))+' · se actualiza sola cada 30 segundos.':'La clave se guarda solo en este navegador. Sin ella nadie puede ver las evaluaciones de los demás.')+'</p></section>';
+  var dis=S.dwn?'':' disabled',r=generalDoc(),tot=0,withS=0,sum=0;
+  ST.forEach(function(s){var L=signedFor(s.id),a=avgFor(s.id);tot+=L.length;if(a!=null){withS++;sum+=a;}});
+  var rows=ST.map(function(s){var L=signedFor(s.id),a=avgFor(s.id);
+    var chips=L.map(function(x){return '<span class="pill ok" title="'+esc(fullName(x))+' · '+esc(fdate(x.ev.signedAt))+'">'+esc(shortName(x))+' · '+fmt(score(x.ev))+'</span>';}).join(' ')||'<span class="pend">Sin firmas aún</span>';
+    return '<tr><th scope="row" style="font-weight:400"><b>'+esc(s.n)+'</b><br><span class="muted small">'+esc(s.e)+'</span></th><td>'+chips+'</td><td class="num" style="text-align:center">'+L.length+'</td><td class="avg num">'+(a==null?'–':'<b>'+fmt(a)+'</b><br><span class="muted small">'+band(a)+'</span>')+'</td></tr>';}).join('');
+  return '<div class="stack"><div class="sec-title"><span class="eyebrow-s">Solo coordinación</span><h2>Reporte general: todas las evaluaciones y el promedio por alumno.</h2><p>Reúne las evaluaciones firmadas de todo el jurado y los invitados, desde cualquier celular o computadora. Cada promedio se calcula con quienes ya firmaron; no hace falta que evalúen todos.</p></div>'+
+   (CLOUD.on?keyBox:setup)+
+   '<div class="stats">'+stat('users','Alumnos con firmas',withS+' de '+ST.length)+stat('pen','Evaluaciones firmadas',String(tot))+stat('award','Promedio del grupo',withS?fmt(sum/withS):'–')+'</div>'+
+   '<div class="row"><button class="btn primary" data-act="dlgeneral"'+dis+'>'+ic('download',18)+'Descargar reporte general (.docx)</button><button class="btn dark" data-act="csv"'+dis+'>'+ic('download',18)+'Exportar a Excel (.csv)</button><button class="btn" data-act="printgen">'+ic('file',18)+'Imprimir</button></div>'+
+   '<div class="tablewrap res-table"><table><caption class="sr">Evaluaciones firmadas y promedio por alumno</caption><thead><tr><th scope="col">Alumno</th><th scope="col">Evaluaciones firmadas</th><th scope="col">Firmas</th><th scope="col" class="th-avg">Promedio</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+   '<article class="paper rep" id="genPaper" aria-label="Vista previa del reporte general">'+r.paras.map(paraHTML).join('')+'</article></div>';
+}
+async function downloadGeneral(){if(!S.dwn||!window.JSZip){toast('La descarga no está disponible en esta vista.');return;}var r=generalDoc();saveFile(r.file,await buildDocx(window.JSZip,r.paras).generateAsync({type:'blob',mimeType:DOCX_MIME}));}
+function cloudStart(){if(!CLOUD.on||!isCoord()||!cloudKey())return;cloudLoad();clearInterval(CLOUD.timer);CLOUD.timer=setInterval(function(){if(document.visibilityState!=='hidden')cloudLoad();},30000);}
+
 /* ---------- Render y eventos ---------- */
 function render(){
-  if((S.tab==='coord'||S.tab==='seguimiento')&&!isCoord())S.tab='programa';
-  tabsEl.innerHTML=TABS.filter(function(t){return (t[0]!=='coord'&&t[0]!=='seguimiento')||isCoord();}).map(function(t){var on=S.tab===t[0];return '<button role="tab" id="tab-'+t[0]+'" aria-controls="app" tabindex="'+(on?0:-1)+'" data-t="'+t[0]+'" aria-selected="'+on+'">'+ic(t[2],18)+t[1]+'</button>';}).join('');
+  var COORD_ONLY=['coord','seguimiento','general'].concat(ON_WEB?['resultados','reportes']:[]);
+  if(COORD_ONLY.indexOf(S.tab)>=0&&!isCoord())S.tab='programa';
+  tabsEl.innerHTML=TABS.filter(function(t){return COORD_ONLY.indexOf(t[0])<0||isCoord();}).map(function(t){var on=S.tab===t[0];return '<button role="tab" id="tab-'+t[0]+'" aria-controls="app" tabindex="'+(on?0:-1)+'" data-t="'+t[0]+'" aria-selected="'+on+'">'+ic(t[2],18)+t[1]+'</button>';}).join('');
   app.setAttribute('aria-labelledby','tab-'+S.tab);
   if(S.tab==='evaluar')autoWho();
-  var v={programa:viewPrograma,evaluar:viewEvaluar,resultados:viewResultados,rubrica:viewRubrica,cartas:viewCartas,accesos:viewAccesos,reportes:viewReportes,coord:viewCoord,seguimiento:viewSeguimiento}[S.tab];
+  var v={programa:viewPrograma,evaluar:viewEvaluar,resultados:viewResultados,rubrica:viewRubrica,cartas:viewCartas,accesos:viewAccesos,reportes:viewReportes,coord:viewCoord,seguimiento:viewSeguimiento,general:viewGeneral}[S.tab];
   var dock=editDock();app.innerHTML=dock?'<div class="stack">'+dock+v()+'</div>':v();S.dirty=false;updateHero();
   var et=document.getElementById('editToggle');if(et){et.hidden=!isCoord();var ei=et.querySelector('input');if(ei)ei.checked=!!S.editMode;}document.body.classList.toggle('on-eval',S.tab==='evaluar'&&!!who());
   if(S.focusLv){var fe=document.getElementById(S.focusLv);if(fe)fe.focus({preventScroll:true});S.focusLv=null;}
@@ -1447,8 +1536,12 @@ app.addEventListener('click',function(e){
     if(isGuest(who())){['gn','gc','ge'].forEach(function(k){var el=document.getElementById('gf_'+k);if(el)r2.ev[k]=el.value.trim();});
       if(!r2.ev.gn){var ge=document.getElementById('gf_err'),gi=document.getElementById('gf_gn');if(ge)ge.hidden=false;if(gi){gi.setAttribute('aria-invalid','true');gi.setAttribute('aria-describedby','gf_err');gi.scrollIntoView({block:'center',behavior:'smooth'});gi.focus({preventScroll:true});}toast('Escribe tu nombre completo para firmar');return;}}
     var miss=CRIT.filter(function(c){return r2.ev.lv[c.id]==null;});
-    if(miss.length){toast('Falta calificar: '+miss.map(function(c){return c.t;}).join(', '));var fe=document.getElementById('lv-'+miss[0].id+'-0');if(fe){fe.scrollIntoView({block:'center',behavior:'smooth'});fe.focus({preventScroll:true});}return;}var ts=new Date().toISOString(),tot=score(r2.ev);r2.ev.signedAt=ts;r2.ev.total=Math.round(tot*10)/10;r2.ev.folio=folio(who(),S.sid,ts,tot);commit(r2.d);render();afterSign();}
-  else if(a==='unsign'){var r3=ensureEv(S.sid);r3.ev.signedAt=null;r3.ev.folio=null;r3.ev.total=null;commit(r3.d);render();}
+    if(miss.length){toast('Falta calificar: '+miss.map(function(c){return c.t;}).join(', '));var fe=document.getElementById('lv-'+miss[0].id+'-0');if(fe){fe.scrollIntoView({block:'center',behavior:'smooth'});fe.focus({preventScroll:true});}return;}var ts=new Date().toISOString(),tot=score(r2.ev);r2.ev.signedAt=ts;r2.ev.total=Math.round(tot*10)/10;r2.ev.folio=folio(who(),S.sid,ts,tot);commit(r2.d);cloudSend('sign',who(),S.sid,r2.ev);render();afterSign();}
+  else if(a==='unsign'){var r3=ensureEv(S.sid);r3.ev.signedAt=null;r3.ev.folio=null;r3.ev.total=null;commit(r3.d);cloudSend('unsign',who(),S.sid,r3.ev);render();}
+  else if(a==='cloudkey'){var ki=document.getElementById('cloudKey');try{localStorage.setItem('pp-cloud-key',(ki&&ki.value||'').trim());}catch(x){}toast('Clave guardada en este navegador');cloudStart();render();}
+  else if(a==='cloudload'){cloudLoad();}
+  else if(a==='dlgeneral'){downloadGeneral();}
+  else if(a==='printgen'){window.print();}
   else if(a==='setwho'){var c=app.querySelector('input[name=whoSel]:checked');if(!c){toast('Elige tu nombre para continuar.');return;}
     switchWho(c.value);render();window.scrollTo(0,0);}
   else if(a==='gocoord'||a==='cojump'){e.preventDefault();var sec=b.dataset.sec;if(S.tab!=='coord'){S.tab='coord';try{history.replaceState(null,'','#coord');}catch(x){}render();}var el=document.getElementById('co-'+sec);if(el){el.scrollIntoView({behavior:'smooth',block:'start'});var f=el.querySelector('input,textarea,button');if(f)f.focus({preventScroll:true});}}
@@ -1504,7 +1597,7 @@ async function boot(){
   routeHash();
   document.addEventListener('qrready',function(){if(S.tab==='accesos')render();});
   window.addEventListener('hashchange',function(){if(routeHash())render();});
-  S.fecha=today();loadLocal();applySched();render();
+  S.fecha=today();loadLocal();applySched();render();cloudStart();
   var c=window.claude;if(!c||!c.use){S.dwn=WEB_DWN;S.ready=true;render();return;}
   var r=await Promise.all([c.use('db'),c.use('user'),c.use('downloads')]).catch(function(){return [null,null,null];});
   S.dwn=r[2]||null;
