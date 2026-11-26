@@ -11,6 +11,8 @@
  * 3. Copia la URL que termina en /exec.
  */
 const CLAVE_COORDINACION = 'CAMBIA-ESTA-CLAVE';
+// Clave de lectura del jurado: debe coincidir con CLOUD_JURY en index.html (permite que los evaluadores vean la tabla del alumno)
+const CLAVE_JURADO = 'jurado-ade-2026';
 const HOJA = 'Evaluaciones';
 const COLS = ['id','w','evaluador','sid','practicante','total','lv','note','gn','gc','ge','signedAt','folio','updatedAt'];
 
@@ -30,11 +32,11 @@ function json_(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
 
-// Lectura: solo con la clave de coordinación
+// Lectura: con la clave de coordinación o la del jurado
 function doGet(e) {
   const p = (e && e.parameter) || {};
   if (p.action !== 'list') return json_({ ok: true, msg: 'Registro de evaluaciones activo' });
-  if (p.key !== CLAVE_COORDINACION) return json_({ ok: false, error: 'Clave de coordinación incorrecta' });
+  if (p.key !== CLAVE_COORDINACION && p.key !== CLAVE_JURADO) return json_({ ok: false, error: 'Clave incorrecta' });
   const v = hoja_().getDataRange().getValues();
   const h = v.shift();
   const data = v.filter(r => r[0]).map(r => {

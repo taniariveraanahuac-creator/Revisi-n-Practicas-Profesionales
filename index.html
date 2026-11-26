@@ -566,7 +566,10 @@ td.avg{font-family:var(--f-display);font-weight:800;font-size:25px;letter-spacin
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .sendbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.sendbar .grow{flex:1;min-width:200px;display:grid;gap:2px}.sendbar b{display:flex;gap:6px;align-items:center}
 .sendqr{width:min(320px,100%);aspect-ratio:1;background:#fff;padding:12px;border-radius:14px;border:1px solid #e7dfd8;margin:0 auto}.sendqr svg{width:100%;height:100%;display:block}
-@media print{body *{visibility:hidden}#genPaper,#genPaper *{visibility:visible}#genPaper{position:absolute;left:0;top:0;width:100%;box-shadow:none;border:0}}
+#printArea{display:none}
+@media print{body.printing>*:not(#printArea){display:none!important}body.printing #printArea{display:block}#printArea .paper{box-shadow:none;border:0;margin:0;max-width:none}}
+.evrows{display:grid;gap:8px}.evrow{border:1px solid #e7dfd8;border-radius:12px;padding:12px 14px}.evh{display:flex;gap:12px;justify-content:space-between;align-items:flex-start}.evh>div:first-child{display:grid;gap:2px}.evs{text-align:right;display:grid}.evs b{font-size:22px;color:#c8470a;line-height:1}.evs span{font-size:12px;color:var(--muted,#6e6259)}.evrow p{margin:8px 0 0;font-size:14.5px}
+.stable .sec-h{align-items:center}.stavg{margin-left:auto;text-align:right;display:grid}.stavg span{font-size:12px;color:var(--muted,#6e6259)}.stavg b{font-size:30px;line-height:1;color:#c8470a}.stavg small{font-size:12px;color:var(--muted,#6e6259)}
 </style>
 </head>
 <body>
@@ -935,12 +938,12 @@ function viewEvaluar(){
     (signed?'<button class="btn dark" data-act="pick" data-sid="'+nxt.id+'">Siguiente '+ic('arrow',18)+'</button>':'<button class="btn primary" data-act="sign">'+ic('pen',18)+'Firmar</button>')+'</div>';
   var pb=(S.personal&&S.personal===w)?'<div class="personal">'+ic('link',18)+'<span>Acceso personal de <b>'+esc(me.n)+'</b>. Tus calificaciones y firmas se guardan con tu nombre.</span></div>':'';
   return '<div class="stack">'+banner+pb+
-   whoBar(w,isG?((ev.gn||'').trim()||me.n):me.n)+(S.showMy?myAccess(w):'')+(ON_WEB&&!window.claude?viewSend():'')+
+   whoBar(w,isG?((ev.gn||'').trim()||me.n):me.n)+(S.showMy?myAccess(w):'')+(ON_WEB&&!window.claude?viewSend():'')+studentTable(s)+
    '<div class="evgrid"><aside class="card stlist" aria-label="Practicantes">'+list+'</aside><div class="stack" style="min-width:0">'+
    '<div class="stsel">'+sel+'</div>'+evnav+
    '<div class="sticky-score"><div style="min-width:0"><h2>'+esc(s.n)+'</h2><span class="muted small">'+esc(s.e)+' · '+sdate(s.d)+' · '+s.h+' h</span></div><div class="big num">'+fmt(tot)+'<small> / 100</small><span class="band">'+(ok?band(tot):'En curso')+'</span></div></div>'+
    gcard+crit+
-   '<section class="card stack"><label class="f" for="note">Comentarios para el practicante (opcional)</label><textarea id="note" data-note="1"'+(signed?' disabled':'')+' placeholder="Fortalezas, áreas de oportunidad, recomendaciones">'+esc(ev.note||'')+'</textarea>'+sign+
+   '<section class="card stack"><label class="f" for="note">Retroalimentación para el alumno</label><textarea id="note" data-note="1"'+(signed?' disabled':'')+' placeholder="Fortalezas, áreas de oportunidad, recomendaciones">'+esc(ev.note||'')+'</textarea>'+sign+
    '<div class="row" style="justify-content:flex-end"><button class="btn" data-act="pick" data-sid="'+nxt.id+'">Siguiente: '+esc(nxt.n.split(' ')[0])+ic('arrow',18)+'</button></div></section>'+
    '</div></div>'+mbar+'</div>';
 }
@@ -1152,14 +1155,14 @@ function reportDoc(s){
   rows.push({tot:true,cells:['Total','100'].concat(L.map(function(x){return fmt(score(x.ev));})).concat([fmt(avg)])});
   p.push({t:'Calificación por criterio (puntos)',b:true,sz:12,after:100});
   p.push({table:{head:head,rows:rows,first:3000}});
-  p.push({t:[{t:'Calificación final: ',b:true,sz:13},{t:fmt(avg)+' / 100',b:true,sz:13,col:'C8470A'},{t:'   '+band(avg)+(fin?'':' (parcial)'),b:true,sz:11}],before:200,after:240});
+  p.push({t:[{t:'Calificación final: ',b:true,sz:13},{t:fmt(avg)+' / 100',b:true,sz:13,col:'C8470A'},{t:'   '+band(avg)+' · promedio de '+n+(n===1?' evaluador':' evaluadores'),b:true,sz:11}],before:200,after:240});
   p.push({t:'Nivel asignado por evaluador',b:true,sz:12,after:100});
   p.push({table:{head:['Criterio'].concat(L.map(shortName)),rows:CRIT.map(function(c){return [c.t].concat(L.map(function(x){var i=x.ev.lv[c.id];return i!=null?LV[i].n:'–';}));}),first:3000}});
   var notes=L.filter(function(x){return (x.ev.note||'').trim();});
-  p.push({t:'Comentarios del jurado',b:true,sz:12,before:200,after:100});
+  p.push({t:'Retroalimentación de cada evaluador',b:true,sz:12,before:200,after:100});
   if(notes.length)notes.forEach(function(x){p.push({t:[{t:fullName(x)+': ',b:true},{t:x.ev.note.trim()}],after:100});});
   else p.push({t:'Sin comentarios registrados.',i:true,after:100});
-  p.push({t:'Firmas electrónicas del jurado',b:true,sz:12,before:200,after:100});
+  p.push({t:'Firmas electrónicas de los evaluadores',b:true,sz:12,before:200,after:100});
   p.push({table:{head:['Evaluador','Cargo','Firmado','Folio'],rows:L.map(function(x){return [fullName(x),cargoOf(x,s),fdate(x.ev.signedAt),x.ev.folio||'–'];}),first:2600}});
   p.push({t:'Documento generado automáticamente por la plataforma de evaluación el '+today()+'. Cada calificación corresponde a una evaluación firmada con nombre, fecha y folio.',sz:9,col:'6E6E73',before:240,after:0});
   return {file:'Reporte_'+s.id+'.docx',paras:p};
@@ -1420,6 +1423,7 @@ function routeHash(){
 /* ---------- Registro general en Google (Apps Script) ---------- */
 /* Pega aquí la URL de tu aplicación web de Apps Script (termina en /exec) */
 var CLOUD_URL='';
+var CLOUD_JURY='jurado-ade-2026';
 var CLOUD={on:/^https:\/\/script\.google\.com\//.test(CLOUD_URL),recs:null,err:null,loading:false,at:null,timer:null};
 function devId(){try{var d=localStorage.getItem('pp-dev');if(!d){d=Math.random().toString(36).slice(2,10);localStorage.setItem('pp-dev',d);}return d;}catch(e){return 'x';}}
 function cloudKey(){try{return localStorage.getItem('pp-cloud-key')||'';}catch(e){return '';}}
@@ -1436,7 +1440,7 @@ function cloudSend(action,w,sid,ev){
    action==='sign'?'Evaluación firmada y enviada al registro general':'Firma retirada del registro general');
 }
 function cloudLoad(){
-  var k=cloudKey();if(!CLOUD.on||!k)return;CLOUD.loading=true;softRender();
+  var k=cloudKey()||CLOUD_JURY;if(!CLOUD.on)return;CLOUD.loading=true;softRender();
   fetch(CLOUD_URL+'?action=list&key='+encodeURIComponent(k)).then(function(r){return r.json();}).then(function(j){
     CLOUD.loading=false;if(!j||!j.ok){CLOUD.err=(j&&j.error)||'No se pudo leer el registro';CLOUD.recs=null;}else{CLOUD.err=null;CLOUD.recs=j.data||[];CLOUD.at=new Date();}softRender();
   }).catch(function(){CLOUD.loading=false;CLOUD.err='No se pudo conectar con el registro general. Revisa tu internet.';softRender();});
@@ -1450,7 +1454,7 @@ function packMine(){
   var w=who(),d=myData();if(!w||!d||!d.evals)return null;
   var r=[],u=[];
   Object.keys(d.evals).forEach(function(sid){var ev=d.evals[sid];
-    if(ev&&ev.signedAt){r.push({s:sid,l:CRIT.map(function(c){var i=ev.lv&&ev.lv[c.id];return i==null?'-':String(i);}).join(''),t:ev.signedAt,f:ev.folio||'',n:(ev.note||'').slice(0,240),gn:ev.gn||'',gc:ev.gc||'',ge:ev.ge||''});}
+    if(ev&&ev.signedAt){r.push({s:sid,l:CRIT.map(function(c){var i=ev.lv&&ev.lv[c.id];return i==null?'-':String(i);}).join(''),t:ev.signedAt,f:ev.folio||'',n:(ev.note||'').slice(0,1200),gn:ev.gn||'',gc:ev.gc||'',ge:ev.ge||''});}
     else u.push(sid);});
   if(!r.length)return null;
   return {w:w,dv:devId(),r:r,u:u};
@@ -1525,6 +1529,52 @@ function generalDoc(){
   });
   return {file:'Reporte_general_Practicas_Profesionales.docx',paras:p};
 }
+/* ---------- Excel (.xlsx) del grupo y reporte individual en PDF ---------- */
+function colL(i){var s='';i++;while(i>0){var m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26);}return s;}
+function xcell(v,r,c,st){var ref=colL(c)+(r+1),sa=st?' s="'+st+'"':'';
+  if(typeof v==='number'&&isFinite(v))return '<c r="'+ref+'"'+sa+'><v>'+v+'</v></c>';
+  return '<c r="'+ref+'" t="inlineStr"'+sa+'><is><t xml:space="preserve">'+xesc(v==null?'':String(v))+'</t></is></c>';}
+function sheetXml(rows,widths){
+  var cols=widths?'<cols>'+widths.map(function(w,i){return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>';}).join('')+'</cols>':'';
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'+cols+'<sheetData>'+
+    rows.map(function(r,ri){return '<row r="'+(ri+1)+'">'+r.map(function(v,ci){return xcell(v,ri,ci,ri===0?1:(typeof v==='number'?2:3));}).join('')+'</row>';}).join('')+'</sheetData></worksheet>';}
+function buildXlsx(JSZipLib,sheets){
+  var z=new JSZipLib();
+  z.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+sheets.map(function(s,i){return '<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';}).join('')+'</Types>');
+  z.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+  z.file('xl/workbook.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'+sheets.map(function(s,i){return '<sheet name="'+xesc(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>';}).join('')+'</sheets></workbook>');
+  z.file('xl/_rels/workbook.xml.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+sheets.map(function(s,i){return '<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>';}).join('')+'<Relationship Id="rId'+(sheets.length+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>');
+  z.file('xl/styles.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="0.0"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFC8470A"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="4"><xf/><xf fontId="1" fillId="2" applyFont="1" applyFill="1"><alignment wrapText="1" vertical="center"/></xf><xf numFmtId="164" applyNumberFormat="1"/><xf applyAlignment="1"><alignment wrapText="1" vertical="top"/></xf></cellXfs></styleSheet>');
+  sheets.forEach(function(s,i){z.file('xl/worksheets/sheet'+(i+1)+'.xml',sheetXml(s.rows,s.widths));});
+  return z;
+}
+function groupSheets(){
+  var jur=EVALS.filter(function(e){return !e.guest;});
+  var res=[['Alumno','Empresa','Fecha','Hora'].concat(jur.map(function(e){return e.n;})).concat(['Invitados (calificación)','Número de evaluaciones','Promedio','Nivel'])];
+  var det=[['Alumno','Empresa','Evaluador','Tipo','Cargo'].concat(CRIT.map(function(c){return c.t+' ('+c.w+')';})).concat(['Total','Nivel','Retroalimentación','Firmado','Folio'])];
+  ST.forEach(function(s){var L=signedFor(s.id),a=avgFor(s.id);
+    var row=[s.n,s.e,s.d,s.h].concat(jur.map(function(e){var x=L.filter(function(y){return y.e.k===e.k;})[0];return x?Math.round(score(x.ev)*10)/10:'';}));
+    row.push(L.filter(function(x){return x.e.guest;}).map(function(x){return fullName(x)+': '+fmt(score(x.ev));}).join('; '));
+    row.push(L.length);row.push(a==null?'':Math.round(a*10)/10);row.push(a==null?'Sin evaluaciones':band(a));res.push(row);
+    L.forEach(function(x){det.push([s.n,s.e,fullName(x),x.e.guest?'Invitado':'Jurado',cargoOf(x,s)].concat(CRIT.map(function(c){var i=x.ev.lv&&x.ev.lv[c.id];return i!=null?Math.round(c.w*LV[i].f*10)/10:'';})).concat([Math.round(score(x.ev)*10)/10,band(score(x.ev)),(x.ev.note||'').trim(),fdate(x.ev.signedAt),x.ev.folio||'']));});
+  });
+  return [{name:'Resumen',rows:res,widths:[34,30,12,8].concat(jur.map(function(){return 16;})).concat([30,12,11,16])},{name:'Detalle por evaluador',rows:det,widths:[30,26,30,10,30].concat(CRIT.map(function(){return 14;})).concat([9,14,60,24,12])}];
+}
+async function downloadXlsx(){if(!isCoord()){toast('Solo la coordinación puede descargar.');return;}if(!S.dwn||!window.JSZip){toast('La descarga no está disponible en esta vista.');return;}
+  var blob=await buildXlsx(window.JSZip,groupSheets()).generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  saveFile('Evaluaciones_Practicas_Profesionales_grupo.xlsx',blob);}
+async function downloadReportFor(sid){if(!isCoord()){toast('Solo la coordinación puede descargar.');return;}if(!S.dwn||!window.JSZip){toast('La descarga no está disponible en esta vista.');return;}var r=reportDoc(stById(sid));saveFile(r.file,await buildDocx(window.JSZip,r.paras).generateAsync({type:'blob',mimeType:DOCX_MIME}));}
+function printParas(paras){var pa=document.getElementById('printArea');if(!pa){pa=document.createElement('div');pa.id='printArea';document.body.appendChild(pa);}
+  pa.innerHTML='<article class="paper rep">'+paras.map(paraHTML).join('')+'</article>';document.body.classList.add('printing');setTimeout(function(){window.print();setTimeout(function(){document.body.classList.remove('printing');},500);},60);}
+/* Tabla de evaluaciones del alumno dentro de Evaluar (todos la ven; no se descarga) */
+function studentTable(s){
+  var L=signedFor(s.id),a=avgFor(s.id);
+  var rows=L.map(function(x){var t=score(x.ev);return '<div class="evrow"><div class="evh"><div><b>'+esc(fullName(x))+'</b><span class="muted small">'+esc(x.e.guest?'Invitado':'Jurado')+' · '+esc(fdate(x.ev.signedAt))+'</span></div><div class="evs"><b class="num">'+fmt(t)+'</b><span>'+band(t)+'</span></div></div><p>'+((x.ev.note||'').trim()?esc(x.ev.note.trim()):'<span class="muted">Sin retroalimentación escrita</span>')+'</p></div>';}).join('');
+  return '<section class="card stack stable"><div class="sec-h"><span class="badge">'+ic('users',20)+'</span><div><h3 style="font-size:19px;margin:0">Evaluaciones de '+esc(s.n)+'</h3><p class="muted small" style="margin:4px 0 0">'+(CLOUD.on?'Se actualiza sola con las firmas de todos los evaluadores.':'Muestra las evaluaciones firmadas que hay en este dispositivo.')+'</p></div><div class="stavg"><span>Promedio</span><b class="num">'+(a==null?'–':fmt(a))+'</b><small>'+L.length+(L.length===1?' evaluación firmada':' evaluaciones firmadas')+(a==null?'':' · '+band(a))+'</small></div></div>'+
+    (L.length?'<div class="evrows">'+rows+'</div>':'<p class="muted" style="margin:0">Aún no hay evaluaciones firmadas para este alumno.</p>')+
+    '<p class="muted small" style="margin:0">El promedio es la media de quienes ya firmaron: cuenta igual con 1, 2, 3 o más evaluadores.</p></section>';
+}
+
 function viewGeneral(){
   if(!isCoord())return '<div class="card"><h2 style="font-size:24px">Sección reservada a la coordinación</h2></div>';
   var ic2=IMPORTS.length,cfi=S.confirm==='clearimp';
@@ -1536,16 +1586,16 @@ function viewGeneral(){
   ST.forEach(function(s){var L=signedFor(s.id),a=avgFor(s.id);tot+=L.length;if(a!=null){withS++;sum+=a;}});
   var rows=ST.map(function(s){var L=signedFor(s.id),a=avgFor(s.id);
     var chips=L.map(function(x){return '<span class="pill ok" title="'+esc(fullName(x))+' · '+esc(fdate(x.ev.signedAt))+'">'+esc(shortName(x))+' · '+fmt(score(x.ev))+'</span>';}).join(' ')||'<span class="pend">Sin firmas aún</span>';
-    return '<tr><th scope="row" style="font-weight:400"><b>'+esc(s.n)+'</b><br><span class="muted small">'+esc(s.e)+'</span></th><td>'+chips+'</td><td class="num" style="text-align:center">'+L.length+'</td><td class="avg num">'+(a==null?'–':'<b>'+fmt(a)+'</b><br><span class="muted small">'+band(a)+'</span>')+'</td></tr>';}).join('');
+    return '<tr><th scope="row" style="font-weight:400"><b>'+esc(s.n)+'</b><br><span class="muted small">'+esc(s.e)+'</span></th><td>'+chips+'</td><td class="num" style="text-align:center">'+L.length+'</td><td class="avg num">'+(a==null?'–':'<b>'+fmt(a)+'</b><br><span class="muted small">'+band(a)+'</span>')+'</td><td><div class="row" style="gap:6px"><button class="btn sm" data-act="dlone" data-sid="'+s.id+'"'+(L.length?'':' disabled')+'>'+ic('download',14)+'Word</button><button class="btn sm" data-act="pdfone" data-sid="'+s.id+'"'+(L.length?'':' disabled')+'>'+ic('file',14)+'PDF</button></div></td></tr>';}).join('');
   return '<div class="stack"><div class="sec-title"><span class="eyebrow-s">Solo coordinación</span><h2>Reporte general: todas las evaluaciones y el promedio por alumno.</h2><p>Reúne las evaluaciones firmadas de todo el jurado y los invitados, desde cualquier celular o computadora. Cada promedio se calcula con quienes ya firmaron; no hace falta que evalúen todos.</p></div>'+
    setup+(CLOUD.on?keyBox:'')+
    '<div class="stats">'+stat('users','Alumnos con firmas',withS+' de '+ST.length)+stat('pen','Evaluaciones firmadas',String(tot))+stat('award','Promedio del grupo',withS?fmt(sum/withS):'–')+'</div>'+
-   '<div class="row"><button class="btn primary" data-act="dlgeneral"'+dis+'>'+ic('download',18)+'Descargar reporte general (.docx)</button><button class="btn dark" data-act="csv"'+dis+'>'+ic('download',18)+'Exportar a Excel (.csv)</button><button class="btn" data-act="printgen">'+ic('file',18)+'Imprimir</button></div>'+
-   '<div class="tablewrap res-table"><table><caption class="sr">Evaluaciones firmadas y promedio por alumno</caption><thead><tr><th scope="col">Alumno</th><th scope="col">Evaluaciones firmadas</th><th scope="col">Firmas</th><th scope="col" class="th-avg">Promedio</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+   '<div class="row"><button class="btn primary" data-act="dlxlsx"'+dis+'>'+ic('download',18)+'Excel del grupo (.xlsx)</button><button class="btn dark" data-act="dlgeneral"'+dis+'>'+ic('download',18)+'Reporte general (Word)</button><button class="btn" data-act="printgen">'+ic('file',18)+'Reporte general en PDF</button><button class="btn" data-act="dlrepall"'+dis+'>'+ic('zip',18)+'Todos los reportes individuales (.zip)</button></div>'+
+   '<div class="tablewrap res-table"><table><caption class="sr">Evaluaciones firmadas y promedio por alumno</caption><thead><tr><th scope="col">Alumno</th><th scope="col">Evaluaciones firmadas</th><th scope="col">Firmas</th><th scope="col" class="th-avg">Promedio</th><th scope="col">Reporte individual</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
    '<article class="paper rep" id="genPaper" aria-label="Vista previa del reporte general">'+r.paras.map(paraHTML).join('')+'</article></div>';
 }
 async function downloadGeneral(){if(!S.dwn||!window.JSZip){toast('La descarga no está disponible en esta vista.');return;}var r=generalDoc();saveFile(r.file,await buildDocx(window.JSZip,r.paras).generateAsync({type:'blob',mimeType:DOCX_MIME}));}
-function cloudStart(){if(!CLOUD.on||!isCoord()||!cloudKey())return;cloudLoad();clearInterval(CLOUD.timer);CLOUD.timer=setInterval(function(){if(document.visibilityState!=='hidden')cloudLoad();},30000);}
+function cloudStart(){if(!CLOUD.on)return;cloudLoad();clearInterval(CLOUD.timer);CLOUD.timer=setInterval(function(){if(document.visibilityState!=='hidden')cloudLoad();},30000);}
 
 /* ---------- Render y eventos ---------- */
 function render(){
@@ -1599,7 +1649,10 @@ app.addEventListener('click',function(e){
   else if(a==='coordout'){try{localStorage.removeItem('pp-coord');}catch(x){}S.tab='programa';toast('Saliste de coordinación en este navegador');render();}
   else if(a==='clearimp'){var ck='clearimp';if(S.confirm!==ck){S.confirm=ck;render();return;}S.confirm=null;IMPORTS=[];saveImports();toast('Entregas borradas de este navegador');render();}
   else if(a==='dlgeneral'){downloadGeneral();}
-  else if(a==='printgen'){window.print();}
+  else if(a==='dlxlsx'){downloadXlsx();}
+  else if(a==='dlone'){downloadReportFor(b.dataset.sid);}
+  else if(a==='pdfone'){if(isCoord())printParas(reportDoc(stById(b.dataset.sid)).paras);}
+  else if(a==='printgen'){if(isCoord())printParas(generalDoc().paras);}
   else if(a==='setwho'){var c=app.querySelector('input[name=whoSel]:checked');if(!c){toast('Elige tu nombre para continuar.');return;}
     switchWho(c.value);render();window.scrollTo(0,0);}
   else if(a==='gocoord'||a==='cojump'){e.preventDefault();var sec=b.dataset.sec;if(S.tab!=='coord'){S.tab='coord';try{history.replaceState(null,'','#coord');}catch(x){}render();}var el=document.getElementById('co-'+sec);if(el){el.scrollIntoView({behavior:'smooth',block:'start'});var f=el.querySelector('input,textarea,button');if(f)f.focus({preventScroll:true});}}

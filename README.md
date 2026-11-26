@@ -69,9 +69,10 @@ En **Accesos** hay un **QR general para invitados evaluadores**: cualquier invit
 
 ## Quién ve qué
 
-- **Evaluadores e invitados:** Programa, Evaluar, Rúbrica, Cartas y Accesos. Solo ven sus propias calificaciones.
-- **Coordinación** (navegador activado con `#coordinacion`): además Resultados, Reportes, Reporte general, Seguimiento y Coordinación.
+- **Evaluadores e invitados:** evalúan con la rúbrica, escriben su retroalimentación, firman y ven la tabla de evaluaciones del alumno con su promedio. No pueden descargar.
+- **Coordinación (Tania, con clave):** administra la plataforma y descarga todo desde **Reporte general**:
+  - **Excel del grupo (.xlsx)** con dos hojas: *Resumen* (calificación de cada evaluador, invitados, número de evaluaciones, promedio y nivel por alumno) y *Detalle por evaluador* (puntos por criterio, total, retroalimentación, firma y folio).
+  - **Reporte individual** de cada alumno en **Word** o **PDF**: calificación por criterio de cada evaluador, nivel, retroalimentación, firmas y promedio final.
+  - **Reporte general** del grupo en Word o PDF, y todos los reportes individuales en un .zip.
 
-## Requisitos
-
-Navegador actualizado (Chrome, Edge, Safari o Firefox). La página carga tipografías de Google Fonts y la librería JSZip desde cdnjs; los códigos QR se generan dentro de la página sin conexión externa.
+El promedio de cada alumno se calcula con quienes firmaron: 1, 2, 3, 4 evaluadores o el invitado, sin importar cuántos participen.
